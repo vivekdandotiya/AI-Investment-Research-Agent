@@ -13,8 +13,8 @@ export default function CompanyProfileCard({ companyName, profile }) {
               <Building2 className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-black text-black tracking-wide leading-none">{companyName}</h2>
-              <p className="text-[9px] text-cyan-800 font-extrabold uppercase tracking-widest mt-1.5">{sector}</p>
+              <h2 className="text-lg font-black text-black font-display tracking-wide leading-none">{companyName}</h2>
+              <p className="text-[9px] text-cyan-800 font-extrabold uppercase tracking-widest mt-1.5 font-display">{sector}</p>
             </div>
           </div>
           <ArrowUpRight className="w-4 h-4 text-slate-500 hover:text-black transition-colors cursor-pointer" />
@@ -22,7 +22,7 @@ export default function CompanyProfileCard({ companyName, profile }) {
 
         <div className="space-y-5">
           <div className="space-y-2">
-            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest">
+            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
               <Cpu className="w-3.5 h-3.5 text-black" />
               <span>Core Business Model</span>
             </div>
@@ -32,7 +32,7 @@ export default function CompanyProfileCard({ companyName, profile }) {
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest">
+            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
               <KeyRound className="w-3.5 h-3.5 text-black" />
               <span>Competitive Moat & Barrier</span>
             </div>

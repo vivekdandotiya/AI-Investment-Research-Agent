@@ -8,21 +8,21 @@ export default function NewsSentimentCard({ sentimentSummary }) {
     switch (sentiment.toLowerCase()) {
       case 'bullish':
         return {
-          bg: 'bg-emerald-100 border-2 border-black text-emerald-950 shadow-[2px_2px_0px_rgba(0,0,0,1)]',
+          bg: 'bg-emerald-100 border-2 border-black text-emerald-950 shadow-[2px_2px_0px_rgba(0,0,0,1)] font-display',
           barColor: 'bg-emerald-500 border-r-2 border-black',
           percent: 'w-[85%]',
           label: 'Bullish'
         };
       case 'bearish':
         return {
-          bg: 'bg-rose-100 border-2 border-black text-rose-950 shadow-[2px_2px_0px_rgba(0,0,0,1)]',
+          bg: 'bg-rose-100 border-2 border-black text-rose-950 shadow-[2px_2px_0px_rgba(0,0,0,1)] font-display',
           barColor: 'bg-rose-500 border-r-2 border-black',
           percent: 'w-[20%]',
           label: 'Bearish'
         };
       default:
         return {
-          bg: 'bg-amber-100 border-2 border-black text-amber-950 shadow-[2px_2px_0px_rgba(0,0,0,1)]',
+          bg: 'bg-amber-100 border-2 border-black text-amber-950 shadow-[2px_2px_0px_rgba(0,0,0,1)] font-display',
           barColor: 'bg-amber-500 border-r-2 border-black',
           percent: 'w-[50%]',
           label: 'Neutral'
@@ -40,8 +40,8 @@ export default function NewsSentimentCard({ sentimentSummary }) {
             <Newspaper className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-black tracking-wide leading-none">Market Sentiment</h3>
-            <p className="text-[9px] text-slate-550 font-extrabold uppercase tracking-widest mt-1.5">Media & Headline Cataloging</p>
+            <h3 className="text-base font-bold text-black tracking-wide leading-none font-display">Market Sentiment</h3>
+            <p className="text-[9px] text-slate-550 font-extrabold uppercase tracking-widest mt-1.5 font-display">Media & Headline Cataloging</p>
           </div>
         </div>
 
@@ -54,7 +54,7 @@ export default function NewsSentimentCard({ sentimentSummary }) {
       <div className="space-y-5">
         {/* Sentiment Scale Bar */}
         <div className="space-y-2.5">
-          <div className="flex justify-between items-center text-[10px] font-black text-slate-800 uppercase tracking-widest">
+          <div className="flex justify-between items-center text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
             <span>Sentiment Consensus Meter</span>
             <span className="font-mono text-black">{sentiment} Overview</span>
           </div>
@@ -72,11 +72,11 @@ export default function NewsSentimentCard({ sentimentSummary }) {
 
         {/* Highlights Summary */}
         <div className="space-y-2">
-          <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest">
+          <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
             <Activity className="w-3.5 h-3.5 text-black" />
             <span>Sentiment Summary Highlights</span>
           </div>
-          <p className="text-slate-850 text-slate-800 text-sm leading-relaxed pl-5.5 font-semibold">
+          <p className="text-slate-800 text-sm leading-relaxed pl-5.5 font-semibold">
             {highlights}
           </p>
         </div>

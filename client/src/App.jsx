@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Terminal, Activity, TrendingUp, ShieldAlert, Cpu, Layers, ArrowLeft } from 'lucide-react';
+import { Sparkles, Terminal, Activity, TrendingUp, ShieldAlert, Cpu, Layers, ArrowLeft, HelpCircle, X } from 'lucide-react';
 import SearchBar from './components/SearchBar';
 import AgentTerminal from './components/AgentTerminal';
 import RecommendationCard from './components/RecommendationCard';
@@ -15,6 +15,7 @@ export default function App() {
   const [logs, setLogs] = useState([]);
   const [sandboxMode, setSandboxMode] = useState(true);
   const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'research', 'financials', 'news', 'risks'
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   const handleSearch = (companyName) => {
     setIsLoading(true);
@@ -80,7 +81,7 @@ export default function App() {
           const trimmed = line.trim();
           if (trimmed.startsWith('### ')) {
             return (
-              <h3 key={index} className="text-lg font-bold text-black mt-6 mb-3 pb-2 border-b-2 border-black tracking-wide flex items-center">
+              <h3 key={index} className="text-lg font-black text-black font-display mt-6 mb-3 pb-2 border-b-2 border-black tracking-wide flex items-center">
                 <span className="w-1.5 h-4.5 bg-black rounded-full mr-2.5"></span>
                 {trimmed.replace('### ', '')}
               </h3>
@@ -88,7 +89,7 @@ export default function App() {
           }
           if (trimmed.startsWith('#### ')) {
             return (
-              <h4 key={index} className="text-base font-bold text-slate-900 mt-4 mb-2 tracking-wide">
+              <h4 key={index} className="text-base font-bold text-slate-900 font-display mt-4 mb-2 tracking-wide">
                 {trimmed.replace('#### ', '')}
               </h4>
             );
@@ -110,7 +111,7 @@ export default function App() {
           }
           if (trimmed.startsWith('>')) {
             return (
-              <blockquote key={index} className="border-l-4 border-black bg-slate-50 px-4 py-2 italic my-3 text-slate-650 text-slate-600 rounded-r-lg">
+              <blockquote key={index} className="border-l-4 border-black bg-slate-550/10 bg-slate-50 px-4 py-2 italic my-3 text-slate-655 text-slate-600 rounded-r-lg">
                 {trimmed.replace('>', '').trim()}
               </blockquote>
             );
@@ -141,7 +142,7 @@ export default function App() {
               I
             </div>
             <div>
-              <h1 className="text-base font-black text-black tracking-wider flex items-center leading-none">
+              <h1 className="text-base font-black text-black font-display tracking-wider flex items-center leading-none">
                 InvesTrack
                 <span className="ml-1.5 text-[8px] font-mono font-black bg-black text-white px-1.5 py-0.5 rounded uppercase tracking-widest leading-none">
                   PRO
@@ -152,6 +153,14 @@ export default function App() {
           </div>
 
           <div className="flex items-center space-x-3">
+            <button
+              onClick={() => setIsHelpOpen(true)}
+              className="flex items-center space-x-1 px-2.5 py-1.5 bg-slate-100 hover:bg-black hover:text-white border-2 border-black rounded-lg text-xs font-bold text-black shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none transition-all hover:translate-x-0.5 hover:translate-y-0.5"
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span className="hidden sm:inline">HOW IT WORKS</span>
+            </button>
+
             {result && !isLoading && (
               <button
                 onClick={resetToLanding}
@@ -185,7 +194,7 @@ export default function App() {
                 <Sparkles className="w-3.5 h-3.5 text-black" />
                 <span>Next-Gen Investment Intelligence</span>
               </div>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-black tracking-tight leading-tight">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-black font-display tracking-tight leading-tight">
                 AI-Powered <br />
                 <span className="underline decoration-black decoration-4 underline-offset-4">
                   Investment Research
@@ -224,8 +233,8 @@ export default function App() {
                   <Cpu className="w-5 h-5 text-black" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-black uppercase tracking-wider">Analyzing {activeCompany}</h3>
-                  <p className="text-xs text-slate-800 mt-1 font-bold">Multi-agent committee parsing market data...</p>
+                  <h3 className="text-sm font-black text-black font-display uppercase tracking-wider">Analyzing {activeCompany}</h3>
+                  <p className="text-xs text-slate-805 mt-1 font-bold text-slate-700">Multi-agent committee parsing market data...</p>
                 </div>
               </div>
               
@@ -268,7 +277,7 @@ export default function App() {
               />
 
               {/* Document/Report Tabs */}
-              <div className="flex border-b-2 border-black overflow-x-auto text-[10px] font-extrabold tracking-widest uppercase">
+              <div className="flex border-b-2 border-black overflow-x-auto text-[10px] font-extrabold tracking-widest uppercase font-display">
                 {[
                   { id: 'overview', label: 'Consensus Dashboard', icon: <Layers className="w-3.5 h-3.5" /> },
                   { id: 'research', label: 'Business Profile', icon: <Cpu className="w-3.5 h-3.5" /> },
@@ -281,8 +290,8 @@ export default function App() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center space-x-2 px-4.5 py-3 border-t-2 border-x-2 border-transparent transition-all duration-150 whitespace-nowrap -mb-[2px] ${
                       activeTab === tab.id
-                        ? 'border-black bg-black text-white shadow-[2px_0px_0px_rgba(0,0,0,1)] rounded-t-lg'
-                        : 'text-slate-800 hover:text-black hover:bg-slate-50'
+                        ? 'border-black bg-black text-white shadow-[2px_0px_0px_rgba(0,0,0,1)] rounded-t-lg font-bold'
+                        : 'text-slate-650 hover:text-black hover:bg-slate-50'
                     }`}
                   >
                     {tab.icon}
@@ -313,7 +322,7 @@ export default function App() {
                       <span className="text-[9px] font-extrabold font-mono px-3 py-1.5 bg-black text-white rounded border border-black tracking-wider">
                         RESEARCH REPORT
                       </span>
-                      <span className="text-[9px] text-slate-550 font-bold uppercase tracking-wider">STATUS: FINALIZED</span>
+                      <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider font-display">STATUS: FINALIZED</span>
                     </div>
                     {renderAgentMarkdown(result.researchReport)}
                   </div>
@@ -325,7 +334,7 @@ export default function App() {
                       <span className="text-[9px] font-extrabold font-mono px-3 py-1.5 bg-black text-white rounded border border-black tracking-wider">
                         FINANCIAL ANALYSIS REPORT
                       </span>
-                      <span className="text-[9px] text-slate-550 font-bold uppercase tracking-wider">STATUS: FINALIZED</span>
+                      <span className="text-[9px] text-slate-550 font-bold uppercase tracking-wider font-display">STATUS: FINALIZED</span>
                     </div>
                     {renderAgentMarkdown(result.financialReport)}
                   </div>
@@ -337,7 +346,7 @@ export default function App() {
                       <span className="text-[9px] font-extrabold font-mono px-3 py-1.5 bg-black text-white rounded border border-black tracking-wider">
                         SENTIMENT & NEWS CATALOG
                       </span>
-                      <span className="text-[9px] text-slate-550 font-bold uppercase tracking-wider">STATUS: FINALIZED</span>
+                      <span className="text-[9px] text-slate-550 font-bold uppercase tracking-wider font-display">STATUS: FINALIZED</span>
                     </div>
                     {renderAgentMarkdown(result.newsReport)}
                   </div>
@@ -349,7 +358,7 @@ export default function App() {
                       <span className="text-[9px] font-extrabold font-mono px-3 py-1.5 bg-black text-white rounded border border-black tracking-wider">
                         RISK ASSESSMENT REPORT
                       </span>
-                      <span className="text-[9px] text-slate-550 font-bold uppercase tracking-wider">STATUS: FINALIZED</span>
+                      <span className="text-[9px] text-slate-555 text-slate-500 font-bold uppercase tracking-wider font-display">STATUS: FINALIZED</span>
                     </div>
                     {renderAgentMarkdown(result.riskReport)}
                   </div>
@@ -362,10 +371,106 @@ export default function App() {
 
       </main>
 
+      {/* ================= STATE 4: SYSTEM DOCUMENTATION POPUP MODAL ================= */}
+      {isHelpOpen && (
+        <div className="fixed inset-0 bg-black/55 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white border-4 border-black p-6 md:p-8 rounded-2xl max-w-2xl w-full shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-h-[90vh] overflow-y-auto relative text-left">
+            
+            {/* Close Button */}
+            <button
+              onClick={() => setIsHelpOpen(false)}
+              className="absolute top-4 right-4 bg-white border-2 border-black hover:bg-black hover:text-white p-1 rounded-lg shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Modal Title */}
+            <div className="border-b-2 border-black pb-3 mb-5">
+              <h3 className="text-xl font-black text-black font-display tracking-wide uppercase flex items-center">
+                <HelpCircle className="w-6 h-6 mr-2 text-cyan-600" />
+                How InvesTrack Functions
+              </h3>
+            </div>
+
+            {/* Modal Body */}
+            <div className="space-y-6">
+              
+              {/* Illustration Picture */}
+              <div className="relative border-2 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+                <img 
+                  src="/site_pipeline_preview.png" 
+                  alt="Multi-Agent AI Pipeline Diagram" 
+                  className="w-full object-cover" 
+                />
+              </div>
+
+              {/* Purpose Intro */}
+              <p className="text-slate-800 text-sm font-semibold leading-relaxed">
+                InvesTrack operates an advanced autonomous AI pipeline powered by **LangChain.js** and **Google Gemini** models. When you request a company analysis, the engine invokes a series of specialized AI agents to compile comprehensive research:
+              </p>
+
+              {/* Agent Roles */}
+              <div className="space-y-4 text-xs md:text-sm font-semibold text-slate-800">
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">1</div>
+                  <div>
+                    <strong className="text-black font-bold uppercase font-display block text-xs">Research Agent</strong>
+                    Crawls web intelligence indexes to outline product sectors, core business models, and competitor Moat strength.
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">2</div>
+                  <div>
+                    <strong className="text-black font-bold uppercase font-display block text-xs">Financial Analysis Agent</strong>
+                    Processes earnings balance sheets and cash flow data, evaluating gross margins, debt leverage, and CAGR profiles.
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">3</div>
+                  <div>
+                    <strong className="text-black font-bold uppercase font-display block text-xs">News & Sentiment Agent</strong>
+                    Scans headlines and corporate media catalogs to index bullish/bearish catalysts and consensus ratings.
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">4</div>
+                  <div>
+                    <strong className="text-black font-bold uppercase font-display block text-xs">Risk Assessment Agent</strong>
+                    Identifies corporate operational risks, regulatory crackdowns, competitive pressures, and supply line threats.
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">5</div>
+                  <div>
+                    <strong className="text-black font-bold uppercase font-display block text-xs">Investment Decision Agent</strong>
+                    Acts as the Chief Investment Officer. Synthesizes report streams to calculate final ratings and outputs the definitive **INVEST** or **PASS** decision.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="border-t-2 border-black pt-4 mt-6 flex justify-end">
+              <button
+                onClick={() => setIsHelpOpen(false)}
+                className="btn-premium px-5 py-2.5 rounded-lg font-black uppercase text-xs"
+              >
+                Understood
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
       {/* Footer Info */}
       <footer className="w-full text-center py-6 text-[10px] text-slate-800 border-t border-black bg-white mt-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 font-bold">
         <p>© {new Date().getFullYear()} InvesTrack Inc. For demonstrative investment screening purposes only.</p>
-        <p className="uppercase tracking-widest">
+        <p className="uppercase tracking-widest font-display">
           Powered by Express, LangChain.js & Google Gemini
         </p>
       </footer>

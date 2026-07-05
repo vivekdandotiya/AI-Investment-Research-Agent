@@ -67,13 +67,13 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
     if (active && payload && payload.length) {
       return (
         <div className="bg-white border-2 border-black rounded-lg p-3 shadow-[3px_3px_0px_rgba(0,0,0,1)]">
-          <p className="text-[10px] font-black text-black mb-1.5 uppercase tracking-wider">{label} Financials</p>
-          <div className="space-y-1 text-xs">
-            <p className="flex items-center text-[#2563eb] font-bold">
+          <p className="text-[10px] font-black text-black mb-1.5 uppercase tracking-wider font-display">{label} Financials</p>
+          <div className="space-y-1 text-xs font-semibold">
+            <p className="flex items-center text-[#2563eb]">
               <span className="w-2 h-2 rounded-full bg-[#2563eb] mr-2"></span>
               Revenue: ${payload[0].value}{valSuffix}
             </p>
-            <p className="flex items-center text-[#059669] font-bold">
+            <p className="flex items-center text-[#059669]">
               <span className="w-2 h-2 rounded-full bg-[#059669] mr-2"></span>
               Net Income: ${payload[1].value}{valSuffix}
             </p>
@@ -87,15 +87,15 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
   return (
     <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6 text-left">
       {/* Chart Canvas */}
-      <div className="lg:col-span-2 premium-card rounded-2xl p-6 flex flex-col space-y-5">
+      <div className="lg:col-span-2 premium-card rounded-2xl p-6 flex flex-col space-y-5 bg-white">
         <div className="flex items-center justify-between border-b-2 border-black pb-4">
           <div className="flex items-center space-x-3">
             <div className="p-2.5 bg-slate-100 border-2 border-black rounded-xl text-black">
               <BarChart2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-black tracking-wide">Historical Financial Performance</h3>
-              <p className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest mt-1.5">Annual Revenue vs Net Income ({valSuffix})</p>
+              <h3 className="text-base font-bold text-black tracking-wide font-display leading-none">Historical Financial Performance</h3>
+              <p className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest mt-1.5 font-display">Annual Revenue vs Net Income ({valSuffix})</p>
             </div>
           </div>
           <span className="text-[9px] font-mono font-bold px-2 py-1 bg-slate-100 border-2 border-black rounded text-black shadow-[1.5px_1.5px_0px_rgba(0,0,0,1)]">
@@ -117,10 +117,10 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
-              <XAxis dataKey="year" stroke="#000000" fontSize={10} tickLine={false} axisLine={false} className="font-bold" />
-              <YAxis stroke="#000000" fontSize={10} tickLine={false} axisLine={false} className="font-bold" />
+              <XAxis dataKey="year" stroke="#000000" fontSize={10} tickLine={false} axisLine={false} className="font-bold font-mono" />
+              <YAxis stroke="#000000" fontSize={10} tickLine={false} axisLine={false} className="font-bold font-mono" />
               <Tooltip content={<CustomTooltip />} />
-              <Legend verticalAlign="top" height={36} iconType="circle" iconSize={8} />
+              <Legend verticalAlign="top" height={36} iconType="circle" iconSize={8} className="font-display font-bold text-xs" />
               <Area type="monotone" name="Total Revenue" dataKey="Revenue" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
               <Area type="monotone" name="Net Income" dataKey="Net Income" stroke="#059669" strokeWidth={3} fillOpacity={1} fill="url(#colorNet)" />
             </AreaChart>
@@ -129,20 +129,20 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
       </div>
 
       {/* Bullet Ratios Profile */}
-      <div className="premium-card rounded-2xl p-6 flex flex-col space-y-6">
+      <div className="premium-card rounded-2xl p-6 flex flex-col space-y-6 bg-white">
         <div className="flex items-center space-x-3 border-b-2 border-black pb-4">
           <div className="p-2.5 bg-slate-100 border-2 border-black rounded-xl text-black">
             <Landmark className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-black tracking-wide">Financial Analysis</h3>
-            <p className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest mt-1.5">Ratio Bulletins & Strengths</p>
+            <h3 className="text-base font-bold text-black tracking-wide font-display leading-none">Financial Analysis</h3>
+            <p className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest mt-1.5 font-display">Ratio Bulletins & Strengths</p>
           </div>
         </div>
 
         <div className="space-y-5 flex-1 overflow-y-auto pr-1 text-xs md:text-sm">
           <div className="space-y-1.5">
-            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest">
+            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
               <DollarSign className="w-3.5 h-3.5 text-black" />
               <span>Revenue Growth Trends</span>
             </div>
@@ -150,7 +150,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest">
+            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
               <Landmark className="w-3.5 h-3.5 text-black" />
               <span>Operating Efficiency</span>
             </div>
@@ -158,7 +158,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest">
+            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
               <Landmark className="w-3.5 h-3.5 text-black" />
               <span>Balance sheet structure</span>
             </div>

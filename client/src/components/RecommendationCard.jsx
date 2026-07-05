@@ -44,13 +44,13 @@ export default function RecommendationCard({ recommendation, investmentScore, co
           {/* Centered Value */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-2xl font-black font-mono text-black leading-none">{score}</span>
-            <span className="text-[9px] text-slate-550 font-extrabold tracking-widest uppercase mt-0.5">%</span>
+            <span className="text-[9px] text-slate-500 font-extrabold tracking-widest uppercase mt-0.5">%</span>
           </div>
         </div>
 
         <div className="flex items-center space-x-1.5 mt-3 z-10">
           {icon}
-          <span className="text-slate-650 text-slate-600 text-[10px] font-extrabold tracking-widest uppercase">{label}</span>
+          <span className="text-slate-600 text-[10px] font-extrabold tracking-widest uppercase font-display">{label}</span>
         </div>
       </div>
     );
@@ -66,13 +66,13 @@ export default function RecommendationCard({ recommendation, investmentScore, co
         <div className="flex-1 space-y-4 text-left">
           <div className="flex items-center space-x-2">
             <BadgeDollarSign className={`w-4.5 h-4.5 ${isInvest ? 'text-emerald-600' : 'text-rose-600'}`} />
-            <span className="text-[10px] font-extrabold text-slate-600 tracking-widest uppercase">
+            <span className="text-[10px] font-extrabold text-slate-600 tracking-widest uppercase font-display">
               Consensus Investment Verdict
             </span>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className={`text-4xl md:text-5xl font-black tracking-widest font-sans px-8 py-3.5 rounded-2xl text-center border-2 border-black leading-none ${
+            <div className={`text-4xl md:text-5xl font-black tracking-widest font-display px-8 py-3.5 rounded-2xl text-center border-2 border-black leading-none ${
               isInvest 
                 ? 'bg-emerald-100 text-emerald-950 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]' 
                 : 'bg-rose-100 text-rose-950 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
@@ -84,19 +84,19 @@ export default function RecommendationCard({ recommendation, investmentScore, co
               {isInvest ? (
                 <>
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping shrink-0" />
-                  <span className="text-emerald-700 font-black uppercase tracking-wider text-[10px]">APPROVED FOR CAPITAL ALLOCATION</span>
+                  <span className="text-emerald-700 font-black uppercase tracking-widest text-[10px] font-display">APPROVED FOR CAPITAL ALLOCATION</span>
                 </>
               ) : (
                 <>
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping shrink-0" />
-                  <span className="text-rose-700 font-black uppercase tracking-wider text-[10px]">HIGH DOWN-SIDE POTENTIAL</span>
+                  <span className="text-rose-700 font-black uppercase tracking-widest text-[10px] font-display">HIGH DOWN-SIDE POTENTIAL</span>
                 </>
               )}
             </div>
           </div>
 
           <div className="space-y-2 pt-2">
-            <span className="text-xs font-black text-black uppercase tracking-wider block">Decision Agent Portfolio Synthesis</span>
+            <span className="text-xs font-black text-black uppercase tracking-wider block font-display">Decision Agent Portfolio Synthesis</span>
             <p className="text-slate-800 text-sm md:text-base leading-relaxed font-semibold">
               {explanation}
             </p>

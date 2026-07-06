@@ -65,7 +65,7 @@ export default function SearchBar({ onSearch, isLoading, sandboxMode, setSandbox
             <span className="w-1.5 h-1.5 rounded-full bg-black mr-2"></span>
             QUICK TARGETS:
           </span>
-          {['Apple Inc', 'NVIDIA Corporation', 'Tesla Inc', 'Intel Corporation'].map((company) => (
+          {['Apple Inc', 'Microsoft Corp', 'Tesla Inc', 'Google LLC'].map((company) => (
             <button
               key={company}
               type="button"

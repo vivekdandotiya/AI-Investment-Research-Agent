@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { ShieldAlert, Play, CheckCircle, Terminal, HelpCircle } from 'lucide-react';
+import { ShieldAlert, Play, CheckCircle, Terminal } from 'lucide-react';
 
 export default function AgentTerminal({ logs = [], isRunning }) {
   const terminalEndRef = useRef(null);

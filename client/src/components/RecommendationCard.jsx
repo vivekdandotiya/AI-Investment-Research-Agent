@@ -65,7 +65,7 @@ export default function RecommendationCard({ recommendation, investmentScore, co
         
         {/* final recommendation tag aur details verdict block */}
         <div className="flex-1 space-y-4 text-left">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2" title="AI research agents collective portfolio verdict consensus">
             <BadgeDollarSign className={`w-4.5 h-4.5 ${isInvest ? 'text-emerald-600' : 'text-rose-600'}`} />
             <span className="text-[10px] font-extrabold text-slate-600 tracking-widest uppercase font-display">
               Consensus Investment Verdict

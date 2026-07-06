@@ -2,21 +2,15 @@ import { ChatGoogle } from "@langchain/google";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { searchWeb } from "../searchService.js";
 
-/**
- * Executes the Risk Analysis Agent workflow.
- * 
- * @param {string} companyName - The company to analyze
- * @param {string} apiKey - Gemini API Key
- * @param {function} onProgress - Callback to stream status updates
- * @returns {Promise<string>} - Detailed Markdown report of corporate risks
- */
+// Risk Analysis Agent code function
 export async function runRiskAgent(companyName, apiKey, onProgress = () => {}) {
-  onProgress({ status: 'risks', message: `Risk Agent: Scanning threat matrices and regulatory challenges for "${companyName}"...` });
+  // log update sent
+  onProgress({ status: 'risks', message: `Risk Agent: "${companyName}" ke competitors aur operational risk structures identify kar rahe hain...` });
 
   const searchQuery = `"${companyName}" business risks competitive threats financial risks industry challenges regulatory issues`;
   const searchResults = await searchWeb(searchQuery);
 
-  onProgress({ status: 'risks', message: 'Risk Agent: Evaluating vulnerability severity and systemic risks...' });
+  onProgress({ status: 'risks', message: 'Risk Agent: Competitive threats aur regulatory risk indexes evaluate kar rahe hain...' });
 
   const model = new ChatGoogle({
     model: "gemini-1.5-flash",
@@ -60,6 +54,6 @@ Discuss financial structure risks, cash burn rates, interest rate sensitivity, c
     searchResultsText: resultsText
   });
 
-  onProgress({ status: 'risks_complete', message: 'Risk Agent: Threat screening and risk vulnerability matrix complete.' });
+  onProgress({ status: 'risks_complete', message: 'Risk Agent: Industry aur operational threat matrices scan pura ho gaya hai!' });
   return response.content;
 }

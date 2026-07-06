@@ -5,7 +5,7 @@ import { DollarSign, Landmark, BarChart2 } from 'lucide-react';
 export default function FinancialsChart({ companyName, summary, investmentScore }) {
   const { revenueGrowth = '', profitability = '', balanceSheet = '' } = summary || {};
 
-  // Retrieve historical financial datasets
+  // different companies ke statistics fetch karne ka check (sandbox mode support)
   const getChartData = () => {
     const name = companyName.toLowerCase();
     
@@ -45,7 +45,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
       ];
     }
 
-    // Dynamic scale calculations based on score
+    // agar random target hai to statistics generate karo score ke base par
     const multiplier = investmentScore > 75 ? 1.16 : investmentScore > 50 ? 1.05 : 0.94;
     let baseRev = 40.0;
     let baseNet = 6.0;
@@ -62,7 +62,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
   const isBillion = !companyName.toLowerCase().includes('simulated') && data[0].Revenue > 8;
   const valSuffix = isBillion ? 'B' : 'M';
 
-  // Custom tooltips inside Recharts
+  // custom design elements tooltips inside Recharts graph
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -86,7 +86,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
 
   return (
     <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6 text-left">
-      {/* Chart Canvas */}
+      {/* chart graphics layout panel */}
       <div className="lg:col-span-2 premium-card rounded-2xl p-6 flex flex-col space-y-5 bg-white">
         <div className="flex items-center justify-between border-b-2 border-black pb-4">
           <div className="flex items-center space-x-3">
@@ -95,7 +95,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
             </div>
             <div>
               <h3 className="text-base font-bold text-black tracking-wide font-display leading-none">Historical Financial Performance</h3>
-              <p className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest mt-1.5 font-display">Annual Revenue vs Net Income ({valSuffix})</p>
+              <p className="text-[9px] text-slate-555 text-slate-500 font-extrabold uppercase tracking-widest mt-1.5 font-display">Annual Revenue vs Net Income ({valSuffix})</p>
             </div>
           </div>
           <span className="text-[9px] font-mono font-bold px-2 py-1 bg-slate-100 border-2 border-black rounded text-black shadow-[1.5px_1.5px_0px_rgba(0,0,0,1)]">
@@ -128,7 +128,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
         </div>
       </div>
 
-      {/* Bullet Ratios Profile */}
+      {/* side key finance performance descriptions bulletins */}
       <div className="premium-card rounded-2xl p-6 flex flex-col space-y-6 bg-white">
         <div className="flex items-center space-x-3 border-b-2 border-black pb-4">
           <div className="p-2.5 bg-slate-100 border-2 border-black rounded-xl text-black">
@@ -136,7 +136,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
           </div>
           <div>
             <h3 className="text-base font-bold text-black tracking-wide font-display leading-none">Financial Analysis</h3>
-            <p className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest mt-1.5 font-display">Ratio Bulletins & Strengths</p>
+            <p className="text-[9px] text-slate-555 text-slate-500 font-extrabold uppercase tracking-widest mt-1.5 font-display">Ratio Bulletins & Strengths</p>
           </div>
         </div>
 
@@ -146,7 +146,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
               <DollarSign className="w-3.5 h-3.5 text-black" />
               <span>Revenue Growth Trends</span>
             </div>
-            <p className="text-slate-700 font-semibold leading-relaxed pl-5.5">{revenueGrowth}</p>
+            <p className="text-slate-705 text-slate-700 font-semibold leading-relaxed pl-5.5">{revenueGrowth}</p>
           </div>
 
           <div className="space-y-1.5">
@@ -154,7 +154,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
               <Landmark className="w-3.5 h-3.5 text-black" />
               <span>Operating Efficiency</span>
             </div>
-            <p className="text-slate-700 font-semibold leading-relaxed pl-5.5">{profitability}</p>
+            <p className="text-slate-705 text-slate-700 font-semibold leading-relaxed pl-5.5">{profitability}</p>
           </div>
 
           <div className="space-y-1.5">
@@ -162,7 +162,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
               <Landmark className="w-3.5 h-3.5 text-black" />
               <span>Balance sheet structure</span>
             </div>
-            <p className="text-slate-700 font-semibold leading-relaxed pl-5.5">{balanceSheet}</p>
+            <p className="text-slate-705 text-slate-700 font-semibold leading-relaxed pl-5.5">{balanceSheet}</p>
           </div>
         </div>
       </div>

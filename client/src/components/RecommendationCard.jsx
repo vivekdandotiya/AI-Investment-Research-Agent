@@ -4,6 +4,7 @@ import { TrendingUp, ShieldCheck, ShieldAlert, BadgeDollarSign } from 'lucide-re
 export default function RecommendationCard({ recommendation, investmentScore, confidenceScore, riskScore, explanation }) {
   const isInvest = recommendation === 'INVEST';
 
+  // dynamic progress circular gauge render karne ka block
   const renderGauge = (score, label, colorClass, gradientId, strokeColor, shadowClass, icon) => {
     const radius = 36;
     const circumference = 2 * Math.PI * radius;
@@ -12,7 +13,7 @@ export default function RecommendationCard({ recommendation, investmentScore, co
     return (
       <div className="flex flex-col items-center bg-white border-2 border-black rounded-xl p-5 flex-1 min-w-[130px] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] relative group overflow-hidden">
         <div className="relative w-24 h-24 flex items-center justify-center">
-          {/* Circular SVG Gauge */}
+          {/* circular svg arc path */}
           <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 96 96">
             <defs>
               <linearGradient id={`grad-${gradientId}`} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -41,10 +42,10 @@ export default function RecommendationCard({ recommendation, investmentScore, co
               className="transition-all duration-1000 ease-out"
             />
           </svg>
-          {/* Centered Value */}
+          {/* gauge ke center me score value display kiya */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-2xl font-black font-mono text-black leading-none">{score}</span>
-            <span className="text-[9px] text-slate-500 font-extrabold tracking-widest uppercase mt-0.5">%</span>
+            <span className="text-[9px] text-slate-555 text-slate-500 font-extrabold tracking-widest uppercase mt-0.5">%</span>
           </div>
         </div>
 
@@ -62,7 +63,7 @@ export default function RecommendationCard({ recommendation, investmentScore, co
     }`}>
       <div className="p-6 md:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10 bg-white">
         
-        {/* Recommendation Badge and Verdict */}
+        {/* final recommendation tag aur details verdict block */}
         <div className="flex-1 space-y-4 text-left">
           <div className="flex items-center space-x-2">
             <BadgeDollarSign className={`w-4.5 h-4.5 ${isInvest ? 'text-emerald-600' : 'text-rose-600'}`} />
@@ -103,7 +104,7 @@ export default function RecommendationCard({ recommendation, investmentScore, co
           </div>
         </div>
 
-        {/* Dynamic Gauges Panel */}
+        {/* right display metrics gauges panels */}
         <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 lg:shrink-0">
           {renderGauge(
             investmentScore, 

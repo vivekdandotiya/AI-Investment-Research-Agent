@@ -4,9 +4,7 @@ import { runNewsAgent } from './agents/newsAgent.js';
 import { runRiskAgent } from './agents/riskAgent.js';
 import { runDecisionAgent } from './agents/decisionAgent.js';
 
-// Import sample data for mock responses
-import { getMockCompanyData } from '../../../client/src/utils/sampleData.js'; // Wait, client directory might not be accessible from server easily, so we will define a local mock generator or simple mock data structure in the server.
-
+// mock data fallback helper function - agar sandbox mode active ho to ye load hoga
 const getLocalMockData = (companyName) => {
   const normalized = companyName.toLowerCase();
   
@@ -74,7 +72,7 @@ const getLocalMockData = (companyName) => {
       sentiment: invScore > 75 ? "Bullish" : "Bearish",
       highlights: `Recent product launches and quarterly earnings announcements have surpassed street estimates, reinforcing investor confidence in long-term earnings capability.`
     },
-    // Detailed markdown reports
+    // agents ke detailed markdown reports
     researchReport: `### Business Review for ${companyName}
 * **Sector**: ${sector}
 * **Moat Strength**: Strong
@@ -95,24 +93,19 @@ const getLocalMockData = (companyName) => {
   };
 };
 
-/**
- * Runs a complete, synchronous investment analysis.
- * 
- * @param {string} companyName - Target company name
- * @param {boolean} useMockData - Force use of mock data
- * @returns {Promise<Object>} - Completed analysis report
- */
+// synchronous analysis execution logic (CORS/API calls)
 export async function analyzeCompany(companyName, useMockData = false) {
   const apiKey = process.env.GOOGLE_API_KEY;
 
+  // agar key missing ho to automatic mock data return karo
   if (useMockData || !apiKey || apiKey === 'your_gemini_api_key_here') {
     if (!useMockData) {
-      console.warn("GOOGLE_API_KEY is missing or unconfigured. Falling back to mock data.");
+      console.warn("GOOGLE_API_KEY config me nahi mili! Automatic mock mode load kar rhe hain.");
     }
     return getLocalMockData(companyName);
   }
 
-  // Sequentially execute agents
+  // sequentially agents chala kar report compile kar rahe hain
   const researchReport = await runResearchAgent(companyName, apiKey);
   const financialReport = await runFinancialAgent(companyName, apiKey);
   const newsReport = await runNewsAgent(companyName, apiKey);
@@ -126,7 +119,7 @@ export async function analyzeCompany(companyName, useMockData = false) {
     riskReport
   }, apiKey);
 
-  // Return the decision combined with the raw reports
+  // decision object aur reports ko jodkar send kiya
   return {
     ...decision,
     researchReport,
@@ -136,50 +129,40 @@ export async function analyzeCompany(companyName, useMockData = false) {
   };
 }
 
-/**
- * Runs a streaming investment analysis, sending updates at each agent step.
- * 
- * @param {string} companyName - Target company name
- * @param {boolean} useMockData - Force use of mock data
- * @param {function} onEvent - SSE event callback function
- */
+// streaming workflow execution logic (SSE)
 export async function streamAnalyzeCompany(companyName, useMockData = false, onEvent = () => {}) {
   const apiKey = process.env.GOOGLE_API_KEY;
 
-  // Check if we must use mock data
+  // sandbox/fallback mode check
   if (useMockData || !apiKey || apiKey === 'your_gemini_api_key_here') {
     const isFallback = !useMockData;
     onEvent({ 
       status: 'warning', 
       message: isFallback 
-        ? 'Warning: GOOGLE_API_KEY is not configured. Running analysis in Sandbox Mock Mode...' 
-        : 'Running sandbox simulation...' 
+        ? 'Aler: Gemini API Key nahi mila. Sandbox Simulation Mode active ho rha hai...' 
+        : 'Sandbox simulation execute ho rahi hai...' 
     });
 
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     
-    // Simulate Research Agent
-    onEvent({ status: 'researching', message: `Research Agent: Gathering profile data for "${companyName}"...` });
+    // simulated sequential logging with delays
+    onEvent({ status: 'researching', message: `Research Agent: "${companyName}" ke baare me index trends extract kar rha hai...` });
     await sleep(1500);
-    onEvent({ status: 'research_complete', message: 'Research Agent: Completed business model and industry structure analysis.' });
+    onEvent({ status: 'research_complete', message: 'Research Agent: Corporate profile and competitive structure index complete.' });
 
-    // Simulate Financial Agent
-    onEvent({ status: 'financials', message: `Financial Agent: Accessing balance sheets and earnings histories...` });
+    onEvent({ status: 'financials', message: `Financial Agent: Balance sheet ratios aur revenue performance examine kar rha hai...` });
     await sleep(1500);
-    onEvent({ status: 'financials_complete', message: 'Financial Agent: Balance sheet, revenue growth, and debt profiles verified.' });
+    onEvent({ status: 'financials_complete', message: 'Financial Agent: Balance sheet structural audit aur FCF evaluations finished.' });
 
-    // Simulate News Agent
-    onEvent({ status: 'news', message: `News Agent: Fetching global news channels and market index feeds...` });
+    onEvent({ status: 'news', message: `News Agent: Global media sources aur social catalysts scrape ho rahe hain...` });
     await sleep(1500);
-    onEvent({ status: 'news_complete', message: 'News Agent: Catalyst analysis and sentiment index classification finished.' });
+    onEvent({ status: 'news_complete', message: 'News Agent: Catalyst mapping aur sentiment consensus indexes calculate ho gaye hain.' });
 
-    // Simulate Risk Agent
-    onEvent({ status: 'risks', message: `Risk Agent: Identifying competitive threats and regulatory risk matrices...` });
+    onEvent({ status: 'risks', message: `Risk Agent: Market volatility aur regulatory threats index compile kar rha hai...` });
     await sleep(1500);
-    onEvent({ status: 'risks_complete', message: 'Risk Agent: Industry and financial risk vectors calculated.' });
+    onEvent({ status: 'risks_complete', message: 'Risk Agent: Industry aur systemic liability metrics map ho gayi hain.' });
 
-    // Simulate Decision Agent
-    onEvent({ status: 'deciding', message: 'Decision Agent: Running multi-agent synthesis and final score modeling...' });
+    onEvent({ status: 'deciding', message: 'Decision Agent: CIO panel consensus synthetic scoring apply kar rha hai...' });
     await sleep(1200);
     
     const mockResult = getLocalMockData(companyName);
@@ -209,7 +192,7 @@ export async function streamAnalyzeCompany(companyName, useMockData = false, onE
       riskReport
     }, apiKey, onEvent);
 
-    // Send complete result
+    // full report complete data packet stream close event me bheja
     onEvent({
       status: 'complete',
       result: {
@@ -221,7 +204,7 @@ export async function streamAnalyzeCompany(companyName, useMockData = false, onE
       }
     });
   } catch (error) {
-    onEvent({ status: 'error', message: `Error occurred during analysis: ${error.message}` });
+    onEvent({ status: 'error', message: `Orchestrator error: ${error.message}` });
     throw error;
   }
 }

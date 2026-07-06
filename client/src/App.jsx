@@ -14,9 +14,10 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [logs, setLogs] = useState([]);
   const [sandboxMode, setSandboxMode] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'research', 'financials', 'news', 'risks'
+  const [activeTab, setActiveTab] = useState('overview'); // tabs track: overview, research, financials, news, risks
   const [isHelpOpen, setIsHelpOpen] = useState(false);
 
+  // company search handler - backend sse route trigger kar rha hai
   const handleSearch = (companyName) => {
     setIsLoading(true);
     setActiveCompany(companyName);
@@ -43,21 +44,22 @@ export default function App() {
           setIsLoading(false);
           eventSource.close();
         } else {
+          // progress logs update track kar rahe hain
           setLogs((prev) => [
             ...prev,
             { status: data.status, message: data.message, timestamp: Date.now() },
           ]);
         }
       } catch (err) {
-        console.error('Failed to parse SSE event message:', err);
+        console.error('SSE messages read karne me fail ho gaya:', err);
       }
     };
 
     eventSource.onerror = (err) => {
-      console.error('EventSource connection error:', err);
+      console.error('SSE stream disconnect ho gaya:', err);
       setLogs((prev) => [
         ...prev,
-        { status: 'error', message: 'Connection lost or server timeout. Aborting scan.', timestamp: Date.now() },
+        { status: 'error', message: 'Connection loose ho gaya ya server respond nahi kar raha. Pipeline close kiya.', timestamp: Date.now() },
       ]);
       setIsLoading(false);
       eventSource.close();
@@ -71,12 +73,12 @@ export default function App() {
     setActiveCompany('');
   };
 
-  // Safe and clean parser for agent markdown logs
+  // markdown response text ko react layout me clean render karne ka function
   const renderAgentMarkdown = (text) => {
-    if (!text) return <p className="text-slate-500 italic">No report contents compiled.</p>;
+    if (!text) return <p className="text-slate-500 italic font-semibold">Report content blank hai bhai.</p>;
     
     return (
-      <div className="space-y-4 text-slate-800 font-sans text-sm md:text-base leading-relaxed">
+      <div className="space-y-4 text-slate-850 text-slate-800 font-sans text-sm md:text-base leading-relaxed text-left">
         {text.split('\n').map((line, index) => {
           const trimmed = line.trim();
           if (trimmed.startsWith('### ')) {
@@ -111,7 +113,7 @@ export default function App() {
           }
           if (trimmed.startsWith('>')) {
             return (
-              <blockquote key={index} className="border-l-4 border-black bg-slate-550/10 bg-slate-50 px-4 py-2 italic my-3 text-slate-655 text-slate-600 rounded-r-lg">
+              <blockquote key={index} className="border-l-4 border-black bg-slate-50 px-4 py-2 italic my-3 text-slate-600 rounded-r-lg">
                 {trimmed.replace('>', '').trim()}
               </blockquote>
             );
@@ -153,6 +155,7 @@ export default function App() {
           </div>
 
           <div className="flex items-center space-x-3">
+            {/* pop-up trigger button */}
             <button
               onClick={() => setIsHelpOpen(true)}
               className="flex items-center space-x-1 px-2.5 py-1.5 bg-slate-100 hover:bg-black hover:text-white border-2 border-black rounded-lg text-xs font-bold text-black shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none transition-all hover:translate-x-0.5 hover:translate-y-0.5"
@@ -185,10 +188,10 @@ export default function App() {
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-6 py-8 flex-1 w-full flex flex-col justify-center relative z-10">
         
-        {/* ================= STATE 1: MINIMAL LANDING PAGE ================= */}
+        {/* ================= STATE 1: LANDING PAGE (agar koi results ya loading active na ho) ================= */}
         {!result && !isLoading && (
           <div className="max-w-2xl mx-auto w-full py-12 md:py-20 flex flex-col items-center justify-center space-y-10 text-center animate-fade-in">
-            {/* Header Hero Area */}
+            {/* landing hero heading area */}
             <div className="space-y-4">
               <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 bg-white border-2 border-black rounded-full text-[10px] font-extrabold text-black tracking-widest uppercase shadow-[2px_2px_0px_rgba(0,0,0,1)]">
                 <Sparkles className="w-3.5 h-3.5 text-black" />
@@ -196,7 +199,7 @@ export default function App() {
               </div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-black font-display tracking-tight leading-tight">
                 AI-Powered <br />
-                <span className="underline decoration-black decoration-4 underline-offset-4">
+                <span className="underline decoration-black decoration-4 underline-offset-4 font-display">
                   Investment Research
                 </span>
               </h2>
@@ -205,7 +208,7 @@ export default function App() {
               </p>
             </div>
 
-            {/* Centralized Search Box */}
+            {/* search input box card */}
             <div className="w-full bg-white border-2 border-black rounded-2xl p-6 md:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
               <SearchBar 
                 onSearch={handleSearch} 
@@ -215,17 +218,16 @@ export default function App() {
               />
             </div>
 
-            {/* Small Footer Notice */}
             <div className="text-[10px] text-slate-700 font-extrabold uppercase tracking-wider">
               No API Keys? Simply activate **Sandbox Mode** to explore compiled profiles instantly.
             </div>
           </div>
         )}
 
-        {/* ================= STATE 2: PIPELINE LOADING SCREEN & TERMINAL ================= */}
+        {/* ================= STATE 2: PIPELINE SCANNING STATE & LOADER TERMINAL ================= */}
         {isLoading && (
           <div className="max-w-3xl mx-auto w-full space-y-8 py-10">
-            {/* Loading Indicator Header */}
+            {/* active loader banner */}
             <div className="premium-card rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center space-x-4">
                 <div className="relative w-14 h-14 shrink-0 flex items-center justify-center">
@@ -233,8 +235,8 @@ export default function App() {
                   <Cpu className="w-5 h-5 text-black" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-black font-display uppercase tracking-wider">Analyzing {activeCompany}</h3>
-                  <p className="text-xs text-slate-805 mt-1 font-bold text-slate-700">Multi-agent committee parsing market data...</p>
+                  <h3 className="text-sm font-black text-black font-display uppercase tracking-wider text-left">Analyzing {activeCompany}</h3>
+                  <p className="text-xs text-slate-800 mt-1 font-bold text-left">Multi-agent committee parsing market data...</p>
                 </div>
               </div>
               
@@ -244,7 +246,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* Scrolling Logs Terminal */}
+            {/* progress logs output console */}
             <div className="space-y-2">
               <h3 className="text-[10px] font-extrabold text-slate-800 uppercase tracking-widest flex items-center">
                 <Terminal className="w-3.5 h-3.5 text-black mr-2" />
@@ -255,19 +257,19 @@ export default function App() {
           </div>
         )}
 
-        {/* ================= STATE 3: FULL SYNTHESIZED DASHBOARD ================= */}
+        {/* ================= STATE 3: FINAL SYNTHESIZED DASHBOARD VIEW ================= */}
         {result && !isLoading && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-fade-in">
             
-            {/* LEFT SIDEBAR: Quick Profile & Context (span 4/12) */}
+            {/* LEFT SIDEBAR: corporate summaries & sentiment consensus */}
             <div className="lg:col-span-4 space-y-6">
               <CompanyProfileCard companyName={activeCompany} profile={result.companyProfile} />
               <NewsSentimentCard sentimentSummary={result.sentimentSummary} />
             </div>
 
-            {/* RIGHT MAIN PANEL: Verdict & Deep Reports (span 8/12) */}
+            {/* RIGHT PANEL: portfolio verdict card & reports tabs */}
             <div className="lg:col-span-8 space-y-6">
-              {/* Verdict Summary Header */}
+              {/* Verdict header metrics summary */}
               <RecommendationCard 
                 recommendation={result.recommendation}
                 investmentScore={result.investmentScore}
@@ -276,7 +278,7 @@ export default function App() {
                 explanation={result.explanation}
               />
 
-              {/* Document/Report Tabs */}
+              {/* documents reports tabs selectors */}
               <div className="flex border-b-2 border-black overflow-x-auto text-[10px] font-extrabold tracking-widest uppercase font-display">
                 {[
                   { id: 'overview', label: 'Consensus Dashboard', icon: <Layers className="w-3.5 h-3.5" /> },
@@ -300,18 +302,18 @@ export default function App() {
                 ))}
               </div>
 
-              {/* Active Tab Panel Output */}
+              {/* Active Tab Panel render components */}
               <div className="transition-all duration-300">
                 {activeTab === 'overview' && (
                   <div className="space-y-6">
-                    {/* Financial Trend Visualizations */}
+                    {/* financial area graphs */}
                     <FinancialsChart 
                       companyName={activeCompany} 
                       summary={result.financialSummary} 
                       investmentScore={result.investmentScore}
                     />
 
-                    {/* Highlights vs Concerns Grid */}
+                    {/* highlights & concerns grid */}
                     <StrengthsWeaknesses strengths={result.strengths} concerns={result.concerns} />
                   </div>
                 )}
@@ -322,7 +324,7 @@ export default function App() {
                       <span className="text-[9px] font-extrabold font-mono px-3 py-1.5 bg-black text-white rounded border border-black tracking-wider">
                         RESEARCH REPORT
                       </span>
-                      <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider font-display">STATUS: FINALIZED</span>
+                      <span className="text-[9px] text-slate-550 font-bold uppercase tracking-wider font-display">STATUS: FINALIZED</span>
                     </div>
                     {renderAgentMarkdown(result.researchReport)}
                   </div>
@@ -358,7 +360,7 @@ export default function App() {
                       <span className="text-[9px] font-extrabold font-mono px-3 py-1.5 bg-black text-white rounded border border-black tracking-wider">
                         RISK ASSESSMENT REPORT
                       </span>
-                      <span className="text-[9px] text-slate-555 text-slate-500 font-bold uppercase tracking-wider font-display">STATUS: FINALIZED</span>
+                      <span className="text-[9px] text-slate-550 font-bold uppercase tracking-wider font-display">STATUS: FINALIZED</span>
                     </div>
                     {renderAgentMarkdown(result.riskReport)}
                   </div>
@@ -371,12 +373,12 @@ export default function App() {
 
       </main>
 
-      {/* ================= STATE 4: SYSTEM DOCUMENTATION POPUP MODAL ================= */}
+      {/* ================= STATE 4: SYSTEM EXPLANATION POPUP MODAL ================= */}
       {isHelpOpen && (
         <div className="fixed inset-0 bg-black/55 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
           <div className="bg-white border-4 border-black p-6 md:p-8 rounded-2xl max-w-2xl w-full shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-h-[90vh] overflow-y-auto relative text-left">
             
-            {/* Close Button */}
+            {/* Modal close controls */}
             <button
               onClick={() => setIsHelpOpen(false)}
               className="absolute top-4 right-4 bg-white border-2 border-black hover:bg-black hover:text-white p-1 rounded-lg shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
@@ -384,7 +386,6 @@ export default function App() {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Modal Title */}
             <div className="border-b-2 border-black pb-3 mb-5">
               <h3 className="text-xl font-black text-black font-display tracking-wide uppercase flex items-center">
                 <HelpCircle className="w-6 h-6 mr-2 text-cyan-600" />
@@ -392,10 +393,9 @@ export default function App() {
               </h3>
             </div>
 
-            {/* Modal Body */}
             <div className="space-y-6">
               
-              {/* Illustration Picture */}
+              {/* generated visual schema diagram */}
               <div className="relative border-2 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_rgba(0,0,0,1)]">
                 <img 
                   src="/site_pipeline_preview.png" 
@@ -404,12 +404,11 @@ export default function App() {
                 />
               </div>
 
-              {/* Purpose Intro */}
               <p className="text-slate-800 text-sm font-semibold leading-relaxed">
                 InvesTrack operates an advanced autonomous AI pipeline powered by **LangChain.js** and **Google Gemini** models. When you request a company analysis, the engine invokes a series of specialized AI agents to compile comprehensive research:
               </p>
 
-              {/* Agent Roles */}
+              {/* sub-agents description bullets */}
               <div className="space-y-4 text-xs md:text-sm font-semibold text-slate-800">
                 <div className="flex items-start space-x-3">
                   <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">1</div>
@@ -453,7 +452,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Modal Footer */}
             <div className="border-t-2 border-black pt-4 mt-6 flex justify-end">
               <button
                 onClick={() => setIsHelpOpen(false)}
@@ -467,7 +465,7 @@ export default function App() {
         </div>
       )}
 
-      {/* Footer Info */}
+      {/* footer text copy */}
       <footer className="w-full text-center py-6 text-[10px] text-slate-800 border-t border-black bg-white mt-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 font-bold">
         <p>© {new Date().getFullYear()} InvesTrack Inc. For demonstrative investment screening purposes only.</p>
         <p className="uppercase tracking-widest font-display">

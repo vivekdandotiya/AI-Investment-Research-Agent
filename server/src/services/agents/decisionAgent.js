@@ -1,27 +1,17 @@
 import { ChatGoogle } from "@langchain/google";
 import { PromptTemplate } from "@langchain/core/prompts";
 
-/**
- * Executes the Investment Decision Agent.
- * 
- * @param {Object} params - The inputs containing all agent reports
- * @param {string} params.companyName - Name of the company
- * @param {string} params.researchReport - Markdown report from Research Agent
- * @param {string} params.financialReport - Markdown report from Financial Agent
- * @param {string} params.newsReport - Markdown report from News Agent
- * @param {string} params.riskReport - Markdown report from Risk Agent
- * @param {string} apiKey - Gemini API Key
- * @param {function} onProgress - Callback to stream status updates
- * @returns {Promise<Object>} - Structured JSON investment analysis and final recommendation
- */
+// Investment Decision Agent ke zariye human verdict compile ho rha hai
 export async function runDecisionAgent({ companyName, researchReport, financialReport, newsReport, riskReport }, apiKey, onProgress = () => {}) {
-  onProgress({ status: 'deciding', message: 'Decision Agent: Synthesizing intelligence reports and calculating scores...' });
+  // log update sent
+  onProgress({ status: 'deciding', message: 'Decision Agent: CIO panel research reports evaluate karke final score calculate kar rha hai...' });
 
+  // gemini model initialize - JSON return mode config kiya isme
   const model = new ChatGoogle({
     model: "gemini-1.5-flash",
     apiKey: apiKey,
     temperature: 0.3,
-    responseMimeType: "application/json" // Force Gemini to return JSON
+    responseMimeType: "application/json" // Gemini ko restrict kar rahe hain taaki strictly clean JSON return kare
   });
 
   const prompt = PromptTemplate.fromTemplate(`
@@ -103,13 +93,14 @@ Output MUST follow this JSON schema exactly:
     riskReport
   });
 
-  onProgress({ status: 'deciding_complete', message: 'Decision Agent: Final investment decision published.' });
+  onProgress({ status: 'deciding_complete', message: 'Decision Agent: Portfolio verdict report compile ho gayi hai!' });
   
   try {
+    // string response ko JSON parse kiya
     const jsonResult = JSON.parse(response.content);
     return jsonResult;
   } catch (error) {
-    console.error("Failed to parse Decision Agent output as JSON. Output was:", response.content);
-    throw new Error("Investment Decision Agent output was not in the expected JSON format.");
+    console.error("Gemini response parse karne me fail ho gaya. Response content tha:", response.content);
+    throw new Error("Gemini response JSON standard format me nahi mila!");
   }
 }

@@ -2,28 +2,24 @@ import { ChatGoogle } from "@langchain/google";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { searchWeb } from "../searchService.js";
 
-/**
- * Executes the Research Agent workflow.
- * 
- * @param {string} companyName - The company to analyze
- * @param {string} apiKey - Gemini API Key
- * @param {function} onProgress - Callback to stream status updates
- * @returns {Promise<string>} - Detailed Markdown report of company profile
- */
+// Research Agent ko run karne ka entry function
 export async function runResearchAgent(companyName, apiKey, onProgress = () => {}) {
-  onProgress({ status: 'researching', message: `Research Agent: Executing target intelligence searches for "${companyName}"...` });
+  // frontend par progress log bheja
+  onProgress({ status: 'researching', message: `Research Agent: "${companyName}" ke baare me internet par search start ho gaya hai...` });
   
   const searchQuery = `"${companyName}" business model industry competitive position moat growth opportunities`;
   const searchResults = await searchWeb(searchQuery);
 
-  onProgress({ status: 'researching', message: 'Research Agent: Processing corporate profiles and competitive positioning...' });
+  onProgress({ status: 'researching', message: 'Research Agent: Mil gayi details! Ab business model aur structural data analyze kar rahe hain...' });
 
+  // gemini model initialize kiya
   const model = new ChatGoogle({
     model: "gemini-1.5-flash",
     apiKey: apiKey,
     temperature: 0.2
   });
 
+  // prompt templates setup kiya
   const prompt = PromptTemplate.fromTemplate(`
 You are a senior equity research analyst at a top-tier investment bank.
 Your task is to analyze the company "{companyName}" and write a detailed, professional business overview report.
@@ -53,8 +49,10 @@ Detail their competitive advantages (e.g., brand value, network effects, cost ad
 Outline the primary vectors of future expansion (e.g., geographic expansion, product diversification, R&D breakthroughs, M&A activity).
 `);
 
+  // search results ko readable string formats me assemble kiya
   const resultsText = searchResults.results.map((r, i) => `[${i+1}] Title: ${r.title}\nUrl: ${r.url}\nSnippet: ${r.content}\n`).join('\n');
 
+  // Langchain Runnable pipeline run kiya human validation ke sath
   const chain = prompt.pipe(model);
   const response = await chain.invoke({
     companyName,
@@ -63,6 +61,6 @@ Outline the primary vectors of future expansion (e.g., geographic expansion, pro
     searchResultsText: resultsText
   });
 
-  onProgress({ status: 'research_complete', message: 'Research Agent: Corporate overview and market position analysis complete.' });
+  onProgress({ status: 'research_complete', message: 'Research Agent: Corporate profile aur market moats analysis pura ho gaya hai!' });
   return response.content;
 }

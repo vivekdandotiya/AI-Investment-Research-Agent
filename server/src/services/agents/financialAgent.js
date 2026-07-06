@@ -2,21 +2,15 @@ import { ChatGoogle } from "@langchain/google";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { searchWeb } from "../searchService.js";
 
-/**
- * Executes the Financial Analysis Agent workflow.
- * 
- * @param {string} companyName - The company to analyze
- * @param {string} apiKey - Gemini API Key
- * @param {function} onProgress - Callback to stream status updates
- * @returns {Promise<string>} - Detailed Markdown report of financials
- */
+// Financial Analysis Agent ka entry point function
 export async function runFinancialAgent(companyName, apiKey, onProgress = () => {}) {
-  onProgress({ status: 'financials', message: `Financial Agent: Gathering financial reports and revenue trends for "${companyName}"...` });
+  // progress update sent
+  onProgress({ status: 'financials', message: `Financial Agent: "${companyName}" ke revenue, margins aur balance sheet trends scan kar rahe hain...` });
 
   const searchQuery = `"${companyName}" financial performance revenue trends net income profit margins debt cash flow`;
   const searchResults = await searchWeb(searchQuery);
 
-  onProgress({ status: 'financials', message: 'Financial Agent: Estimating CAGR, operating efficiency, and balance sheet quality...' });
+  onProgress({ status: 'financials', message: 'Financial Agent: Balance sheet aur capital structures details examine kar rahe hain...' });
 
   const model = new ChatGoogle({
     model: "gemini-1.5-flash",
@@ -63,6 +57,6 @@ List 2-4 critical financial concerns (e.g., decelerating growth, margin compress
     searchResultsText: resultsText
   });
 
-  onProgress({ status: 'financials_complete', message: 'Financial Agent: Financial health and trend analysis complete.' });
+  onProgress({ status: 'financials_complete', message: 'Financial Agent: Financial health aur balance sheet analysis complete!' });
   return response.content;
 }

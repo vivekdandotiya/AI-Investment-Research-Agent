@@ -2,21 +2,15 @@ import { ChatGoogle } from "@langchain/google";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { searchWeb } from "../searchService.js";
 
-/**
- * Executes the News & Sentiment Agent workflow.
- * 
- * @param {string} companyName - The company to analyze
- * @param {string} apiKey - Gemini API Key
- * @param {function} onProgress - Callback to stream status updates
- * @returns {Promise<string>} - Detailed Markdown report of news and sentiment
- */
+// News & Sentiment Agent function definition
 export async function runNewsAgent(companyName, apiKey, onProgress = () => {}) {
-  onProgress({ status: 'news', message: `News Agent: Fetching recent headlines and market announcements for "${companyName}"...` });
+  // log update sent
+  onProgress({ status: 'news', message: `News Agent: "${companyName}" ke baare me haal hi ki headlines aur press releases fetch kar rahe hain...` });
 
   const searchQuery = `"${companyName}" recent news headlines developments press release market sentiment`;
   const searchResults = await searchWeb(searchQuery);
 
-  onProgress({ status: 'news', message: 'News Agent: Classifying sentiment index and sorting positive/negative news signals...' });
+  onProgress({ status: 'news', message: 'News Agent: Positive aur negative catalysts categories classify ho rahi hain...' });
 
   const model = new ChatGoogle({
     model: "gemini-1.5-flash",
@@ -60,6 +54,6 @@ State the overall sentiment clearly: **BULLISH**, **NEUTRAL**, or **BEARISH**. F
     searchResultsText: resultsText
   });
 
-  onProgress({ status: 'news_complete', message: 'News Agent: Market sentiment and catalyst screening complete.' });
+  onProgress({ status: 'news_complete', message: 'News Agent: Sentiment mapping aur catalysts classifications complete!' });
   return response.content;
 }

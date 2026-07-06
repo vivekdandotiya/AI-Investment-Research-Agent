@@ -1,85 +1,146 @@
 import React, { useEffect, useRef } from 'react';
-import { Terminal, Cpu, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ShieldAlert, Play, CheckCircle, Terminal, HelpCircle } from 'lucide-react';
 
 export default function AgentTerminal({ logs = [], isRunning }) {
   const terminalEndRef = useRef(null);
 
+  // jab bhi naye logs aayein, terminal ko automatically bottom par scroll kar do
   useEffect(() => {
-    if (terminalEndRef.current) {
-      terminalEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
+    terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [logs]);
 
-  const getLogIcon = (status) => {
-    switch (status) {
-      case 'connected':
-        return <Terminal className="w-4 h-4 text-black" />;
-      case 'researching':
-      case 'financials':
-      case 'news':
-      case 'risks':
-      case 'deciding':
-        return <Cpu className="w-4 h-4 text-black animate-spin" style={{ animationDuration: '3s' }} />;
-      case 'research_complete':
-      case 'financials_complete':
-      case 'news_complete':
-      case 'risks_complete':
-      case 'deciding_complete':
-        return <CheckCircle2 className="w-4 h-4 text-emerald-600" />;
-      case 'error':
-        return <AlertCircle className="w-4 h-4 text-rose-600" />;
-      default:
-        return <Terminal className="w-4 h-4 text-slate-500" />;
-    }
+  // log update ka dynamic standard timestamp format return karne ke liye
+  const formatTime = (timestamp) => {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return date.toTimeString().split(' ')[0];
   };
 
-  const getLogStyle = (status) => {
-    if (status?.includes('complete')) return 'text-emerald-700 font-bold';
-    if (status === 'error') return 'text-rose-700 font-bold';
-    if (status === 'warning') return 'text-amber-700 italic font-bold';
-    return 'text-slate-800 font-medium';
+  // agent status ke base par visual classes aur icon define karne ka selector block
+  const getEventMeta = (status) => {
+    switch (status) {
+      case 'researching':
+        return {
+          textColor: 'text-indigo-900 bg-indigo-50 border-indigo-200',
+          badgeText: 'RESEARCHING',
+          icon: <Play className="w-3 h-3 animate-pulse text-indigo-600" />
+        };
+      case 'research_complete':
+        return {
+          textColor: 'text-emerald-900 bg-emerald-50 border-emerald-200',
+          badgeText: 'RESEARCH DONE',
+          icon: <CheckCircle className="w-3 h-3 text-emerald-600" />
+        };
+      case 'financials':
+        return {
+          textColor: 'text-blue-900 bg-blue-50 border-blue-200',
+          badgeText: 'FINANCIAL ANALYSIS',
+          icon: <Play className="w-3 h-3 animate-pulse text-blue-600" />
+        };
+      case 'financials_complete':
+        return {
+          textColor: 'text-emerald-900 bg-emerald-50 border-emerald-200',
+          badgeText: 'FINANCIALS DONE',
+          icon: <CheckCircle className="w-3 h-3 text-emerald-600" />
+        };
+      case 'news':
+        return {
+          textColor: 'text-purple-900 bg-purple-50 border-purple-200',
+          badgeText: 'SENTIMENT SCAN',
+          icon: <Play className="w-3 h-3 animate-pulse text-purple-600" />
+        };
+      case 'news_complete':
+        return {
+          textColor: 'text-emerald-900 bg-emerald-50 border-emerald-200',
+          badgeText: 'SENTIMENT DONE',
+          icon: <CheckCircle className="w-3 h-3 text-emerald-600" />
+        };
+      case 'risks':
+        return {
+          textColor: 'text-rose-900 bg-rose-50 border-rose-200',
+          badgeText: 'RISK INDEX',
+          icon: <Play className="w-3 h-3 animate-pulse text-rose-600" />
+        };
+      case 'risks_complete':
+        return {
+          textColor: 'text-emerald-900 bg-emerald-50 border-emerald-200',
+          badgeText: 'RISK DONE',
+          icon: <CheckCircle className="w-3 h-3 text-emerald-600" />
+        };
+      case 'deciding':
+        return {
+          textColor: 'text-amber-900 bg-amber-50 border-amber-200',
+          badgeText: 'CIO DECISION',
+          icon: <Play className="w-3 h-3 animate-pulse text-amber-600" />
+        };
+      case 'deciding_complete':
+        return {
+          textColor: 'text-teal-900 bg-teal-50 border-teal-200',
+          badgeText: 'CIO COMPLETE',
+          icon: <CheckCircle className="w-3 h-3 text-teal-600" />
+        };
+      case 'warning':
+        return {
+          textColor: 'text-amber-950 bg-amber-100 border-amber-300',
+          badgeText: 'WARNING',
+          icon: <ShieldAlert className="w-3 h-3 text-amber-800" />
+        };
+      case 'error':
+        return {
+          textColor: 'text-red-950 bg-red-100 border-red-300',
+          badgeText: 'FAILED',
+          icon: <ShieldAlert className="w-3 h-3 text-red-800" />
+        };
+      default:
+        return {
+          textColor: 'text-slate-800 bg-slate-100 border-slate-300',
+          badgeText: 'SYSTEM',
+          icon: <Terminal className="w-3 h-3 text-black" />
+        };
+    }
   };
 
   return (
-    <div className="w-full bg-white border-2 border-black rounded-2xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative text-left">
-      {/* Terminal Title Bar */}
-      <div className="flex items-center justify-between px-5 py-3.5 bg-slate-100 border-b-2 border-black relative z-10">
-        <div className="flex items-center space-x-2.5">
-          <div className="flex space-x-1.5">
-            <div className="w-3 h-3 rounded-full bg-rose-500 border border-black"></div>
-            <div className="w-3 h-3 rounded-full bg-amber-500 border border-black"></div>
-            <div className="w-3 h-3 rounded-full bg-emerald-500 border border-black"></div>
-          </div>
-          <span className="text-[10px] font-mono font-black text-black tracking-wider ml-2">INVESTMENT_PIPELINE.LOG</span>
-        </div>
-        {isRunning && (
-          <span className="flex items-center text-[10px] font-mono font-black text-black border border-black px-2 py-0.5 bg-white rounded shadow-[1px_1px_0px_rgba(0,0,0,1)]">
-            <span className="w-1.5 h-1.5 rounded-full bg-black animate-ping mr-2"></span>
-            PIPELINE_RUNNING
-          </span>
-        )}
-      </div>
-
-      {/* Terminal Display */}
-      <div className="p-5 bg-slate-50 min-h-[220px] max-h-[300px] overflow-y-auto font-mono text-xs md:text-sm space-y-3.5 terminal-scroll relative z-10">
+    <div className="w-full bg-slate-50 border-2 border-black rounded-xl p-5 md:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden flex flex-col justify-between">
+      {/* terminal core display logs block */}
+      <div className="h-[220px] overflow-y-auto space-y-3.5 pr-2 font-mono text-[11px] md:text-xs text-left scrollbar-thin">
         {logs.length === 0 ? (
-          <div className="h-44 flex flex-col items-center justify-center text-slate-500 italic space-y-2">
-            <Terminal className="w-8 h-8 text-slate-400" />
-            <span className="text-xs font-semibold">Waiting to trigger multi-agent pipeline...</span>
+          <div className="flex items-center space-x-2 text-slate-500 animate-pulse py-1">
+            <Play className="w-3.5 h-3.5 animate-spin" />
+            <span>AI pipelines load hone ka wait kar rahe hain...</span>
           </div>
         ) : (
-          logs.map((log, index) => (
-            <div key={index} className="flex items-start space-x-3 transition-opacity duration-300">
-              <div className="mt-0.5 shrink-0">{getLogIcon(log.status)}</div>
-              <div className="flex-1">
-                <span className="text-slate-500 mr-2.5 font-bold">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
-                <span className={getLogStyle(log.status)}>{log.message}</span>
+          logs.map((log, index) => {
+            const meta = getEventMeta(log.status);
+            return (
+              <div key={index} className="flex flex-col sm:flex-row sm:items-start gap-2 border-b border-black/5 pb-2 last:border-none last:pb-0">
+                <div className="flex items-center space-x-1.5 shrink-0">
+                  <span className="text-slate-500 font-extrabold">{formatTime(log.timestamp)}</span>
+                  <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded border-2 border-black text-[9px] font-black uppercase tracking-wider ${meta.textColor}`}>
+                    {meta.icon}
+                    <span>{meta.badgeText}</span>
+                  </span>
+                </div>
+                <div className="text-slate-800 font-semibold break-words leading-relaxed pl-1 sm:pl-0">
+                  {log.message}
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
         <div ref={terminalEndRef} />
       </div>
+
+      {/* terminal bottom active state banner */}
+      {isRunning && (
+        <div className="border-t border-black/10 pt-3.5 mt-3.5 flex items-center justify-between text-[9px] font-black tracking-widest text-slate-655 text-slate-600">
+          <span className="flex items-center uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-black animate-ping mr-2" />
+            Active pipeline execution: Stream alive
+          </span>
+          <span>LANGCHAIN WORKFLOW</span>
+        </div>
+      )}
     </div>
   );
 }

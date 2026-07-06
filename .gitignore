@@ -8,6 +8,7 @@ yarn-error.log*
 dist/
 build/
 client/dist/
+*.zip
 
 # Environment files (secrets)
 .env

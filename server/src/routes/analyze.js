@@ -3,15 +3,17 @@ import { analyzeCompany, streamAnalyzeCompany } from '../services/orchestrator.j
 
 const router = express.Router();
 
-// Synchronous POST analysis endpoint
+// normal POST call - agar streaming nahi chahiye to
 router.post('/', async (req, res, next) => {
   const { companyName, useMockData } = req.body;
   
+  // check kar rha hoon ki companyName khali to nahi hai
   if (!companyName || typeof companyName !== 'string' || !companyName.trim()) {
-    return res.status(400).json({ error: 'Company name is required.' });
+    return res.status(400).json({ error: 'Bhai, company ka naam dena zaroori hai!' });
   }
 
   try {
+    // backend analysis execute kar rha hai
     const result = await analyzeCompany(companyName.trim(), !!useMockData);
     res.json(result);
   } catch (error) {
@@ -19,37 +21,39 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-// Streaming GET analysis endpoint via Server-Sent Events (SSE)
+// SSE (Server-Sent Events) endpoint - taaki agents ke logs client par stream ho sakein
 router.get('/stream', async (req, res, next) => {
   const { companyName, useMockData } = req.query;
 
   if (!companyName || typeof companyName !== 'string' || !companyName.trim()) {
-    res.status(400).json({ error: 'Company name query parameter is required.' });
+    res.status(400).json({ error: 'Stream ke liye companyName bhejna padega query me!' });
     return;
   }
 
-  // Set SSE Headers
+  // SSE ke zaroori headers set kar rahe hain yahan
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
-  res.setHeader('X-Accel-Buffering', 'no'); // Prevent buffering in proxies (Nginx, Vercel)
+  res.setHeader('X-Accel-Buffering', 'no'); // proxy buffering band karne ke liye (important for Vercel/Nginx)
 
-  // Send initial ping/connection event
-  res.write(`data: ${JSON.stringify({ status: 'connected', message: `Initializing Investment Research Agent for ${companyName.trim()}...` })}\n\n`);
+  // connection establish hote hi pehla message send kiya
+  res.write(`data: ${JSON.stringify({ status: 'connected', message: `${companyName.trim()} ke liye agents ready kar rahe hain...` })}\n\n`);
 
-  // Simple keep-alive interval to prevent client disconnection on long requests
+  // tab tak ping bhejte rahenge taaki connection timeout na ho jaye long execution me
   const keepAliveInterval = setInterval(() => {
     res.write(': keep-alive\n\n');
   }, 15000);
 
   try {
+    // orchestrator stream chala raha hai
     await streamAnalyzeCompany(companyName.trim(), useMockData === 'true', (event) => {
       res.write(`data: ${JSON.stringify(event)}\n\n`);
     });
   } catch (error) {
-    console.error('Streaming Analysis Error:', error);
-    res.write(`data: ${JSON.stringify({ status: 'error', message: `Analysis failed: ${error.message}` })}\n\n`);
+    console.error('Streaming API me issue aaya:', error);
+    res.write(`data: ${JSON.stringify({ status: 'error', message: `Analysis beech me hi ruk gayi: ${error.message}` })}\n\n`);
   } finally {
+    // kaam hone ke baad interval band karo aur stream close karo
     clearInterval(keepAliveInterval);
     res.end();
   }

@@ -1,17 +1,12 @@
 import axios from 'axios';
 
-/**
- * Searches the web for a given query using the Tavily Search API.
- * Falls back to a mock/simulated result if no API key is available.
- * 
- * @param {string} query - The search query
- * @returns {Promise<Object>} - Search results containing results and answers
- */
+// is function se internet search chalta hai Tavily API se
 export async function searchWeb(query) {
   const apiKey = process.env.TAVILY_API_KEY;
 
+  // check kar rahe hain ki key hai ya nahi
   if (!apiKey || apiKey === 'your_tavily_api_key_here') {
-    console.warn(`[Search Service] Tavily API key is missing. Simulating search for: "${query}"`);
+    console.warn(`[Search Service] Tavily key nahi mili, simulated search ho rha query: "${query}"`);
     return {
       query,
       results: [
@@ -26,6 +21,7 @@ export async function searchWeb(query) {
   }
 
   try {
+    // Tavily API hit kar rahe hain query bhejkar
     const response = await axios.post('https://api.tavily.com/search', {
       api_key: apiKey,
       query,
@@ -40,8 +36,8 @@ export async function searchWeb(query) {
       answer: response.data.answer || ''
     };
   } catch (error) {
-    console.error(`[Search Service] Tavily API search failed for query "${query}":`, error.message);
-    // Fallback on search failure
+    console.error(`[Search Service] Tavily search me dikkat aayi query: "${query}":`, error.message);
+    // error aane par khali result bhej do taaki code crash na ho
     return {
       query,
       results: [],

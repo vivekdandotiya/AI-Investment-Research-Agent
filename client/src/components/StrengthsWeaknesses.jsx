@@ -4,7 +4,7 @@ import { CheckCircle2, AlertTriangle, ShieldCheck } from 'lucide-react';
 export default function StrengthsWeaknesses({ strengths = [], concerns = [] }) {
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-      {/* Key Strengths */}
+      {/* positive points (strengths) show karne ke liye panel */}
       <div className="premium-card rounded-2xl p-6 border-emerald-500/10 shadow-lg bg-white">
         <div className="flex items-center space-x-3 border-b-2 border-black pb-4 mb-5">
           <div className="p-2.5 bg-emerald-100 border-2 border-black rounded-xl text-emerald-800">
@@ -12,7 +12,7 @@ export default function StrengthsWeaknesses({ strengths = [], concerns = [] }) {
           </div>
           <div>
             <h3 className="text-base font-black text-black font-display tracking-wide">Investment Catalysts & Strengths</h3>
-            <p className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest mt-1.5 font-display">Bull Thesis Drivers</p>
+            <p className="text-[9px] text-slate-550 font-extrabold uppercase tracking-widest mt-1.5 font-display">Bull Thesis Drivers</p>
           </div>
         </div>
 
@@ -30,7 +30,7 @@ export default function StrengthsWeaknesses({ strengths = [], concerns = [] }) {
         </ul>
       </div>
 
-      {/* Key Concerns */}
+      {/* negatives aur concerns threats show karne ke liye panel */}
       <div className="premium-card rounded-2xl p-6 border-rose-500/10 shadow-lg bg-white">
         <div className="flex items-center space-x-3 border-b-2 border-black pb-4 mb-5">
           <div className="p-2.5 bg-rose-100 border-2 border-black rounded-xl text-rose-800">

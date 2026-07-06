@@ -4,6 +4,7 @@ import { Search, Sparkles, Cpu } from 'lucide-react';
 export default function SearchBar({ onSearch, isLoading, sandboxMode, setSandboxMode }) {
   const [query, setQuery] = useState('');
 
+  // form submit hone par search trigger karne ka handler
   const handleSubmit = (e) => {
     e.preventDefault();
     if (query.trim() && !isLoading) {
@@ -11,6 +12,7 @@ export default function SearchBar({ onSearch, isLoading, sandboxMode, setSandbox
     }
   };
 
+  // quick suggest list me se click hone par analyze trigger karne ke liye
   const quickSelect = (name) => {
     if (!isLoading) {
       setQuery(name);
@@ -20,7 +22,7 @@ export default function SearchBar({ onSearch, isLoading, sandboxMode, setSandbox
 
   return (
     <div className="w-full space-y-5">
-      {/* Search Input Box */}
+      {/* search input box container */}
       <form onSubmit={handleSubmit} className="relative w-full">
         <div className="relative flex items-center bg-white rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus-within:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus-within:-translate-x-0.5 focus-within:-translate-y-0.5 transition-all duration-150">
           <div className="absolute left-4 text-black">
@@ -56,7 +58,7 @@ export default function SearchBar({ onSearch, isLoading, sandboxMode, setSandbox
         </div>
       </form>
 
-      {/* Control Board & Demo Targets */}
+      {/* demo targets suggestion block */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-black font-extrabold uppercase tracking-widest text-[9px] mr-1 flex items-center">
@@ -76,7 +78,7 @@ export default function SearchBar({ onSearch, isLoading, sandboxMode, setSandbox
           ))}
         </div>
 
-        {/* Sandbox Mode Toggle */}
+        {/* sandbox mode toggle button - offline testing ke liye */}
         <button
           type="button"
           onClick={() => setSandboxMode(!sandboxMode)}

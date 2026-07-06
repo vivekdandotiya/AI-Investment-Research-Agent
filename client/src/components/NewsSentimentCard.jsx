@@ -52,7 +52,7 @@ export default function NewsSentimentCard({ sentimentSummary }) {
       </div>
 
       <div className="space-y-5">
-        {/* Sentiment Scale Bar */}
+        {/* sentiment meter scale display */}
         <div className="space-y-2.5">
           <div className="flex justify-between items-center text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
             <span>Sentiment Consensus Meter</span>
@@ -60,7 +60,7 @@ export default function NewsSentimentCard({ sentimentSummary }) {
           </div>
           <div className="h-3.5 w-full bg-slate-100 border-2 border-black rounded-full overflow-hidden relative">
             <div className={`h-full rounded-full ${style.barColor} ${style.percent} transition-all duration-1000 ease-out`} />
-            {/* Center tick indicator */}
+            {/* neutral center index indicator tick */}
             <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-black/25" title="Neutral line" />
           </div>
           <div className="flex justify-between text-[9px] font-extrabold font-mono tracking-widest text-slate-500">
@@ -70,7 +70,7 @@ export default function NewsSentimentCard({ sentimentSummary }) {
           </div>
         </div>
 
-        {/* Highlights Summary */}
+        {/* headlines summary highlights display */}
         <div className="space-y-2">
           <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
             <Activity className="w-3.5 h-3.5 text-black" />

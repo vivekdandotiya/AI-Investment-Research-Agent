@@ -43,6 +43,7 @@ app.use('/api/', limiter);
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'UP',
+    uptime: process.uptime(), // server kitni der se chal rha hai (uptime)
     timestamp: new Date().toISOString(),
     env: process.env.NODE_ENV || 'development'
   });

@@ -1,4 +1,4 @@
-import { ChatGoogle } from "@langchain/google";
+import { ChatGroq } from "@langchain/groq";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { searchWeb } from "../searchService.js";
 
@@ -13,8 +13,8 @@ export async function runResearchAgent(companyName, apiKey, onProgress = () => {
   onProgress({ status: 'researching', message: 'Research Agent: Mil gayi details! Ab business model aur structural data analyze kar rahe hain...' });
 
   // gemini model initialize kiya
-  const model = new ChatGoogle({
-    model: "gemini-2.0-flash",
+  const model = new ChatGroq({
+    model: "llama-3.1-8b-instant",
     apiKey: apiKey,
     temperature: 0.2
   });
@@ -50,7 +50,7 @@ Outline the primary vectors of future expansion (e.g., geographic expansion, pro
 `);
 
   // search results ko readable string formats me assemble kiya
-  const resultsText = searchResults.results.map((r, i) => `[${i+1}] Title: ${r.title}\nUrl: ${r.url}\nSnippet: ${r.content}\n`).join('\n');
+  const resultsText = searchResults.results.slice(0, 3).map((r, i) => `[${i+1}] Title: ${r.title}\nSnippet: ${r.content}\n`).join('\n');
 
   // Langchain Runnable pipeline run kiya human validation ke sath
   const chain = prompt.pipe(model);

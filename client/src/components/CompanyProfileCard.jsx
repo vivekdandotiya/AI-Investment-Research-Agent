@@ -5,7 +5,7 @@ export default function CompanyProfileCard({ companyName, profile }) {
   const { sector = 'N/A', businessModel = 'N/A', moat = 'N/A' } = profile || {};
 
   return (
-    <div className="premium-card rounded-2xl p-6 space-y-6 flex flex-col justify-between text-left bg-white">
+    <div className="bg-white border-2 border-black text-black rounded-2xl p-6 space-y-6 flex flex-col justify-between text-left shadow-[4px_4px_0px_rgba(0,0,0,1)] relative overflow-hidden">
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b-2 border-black pb-4">
           <div className="flex items-center space-x-3">

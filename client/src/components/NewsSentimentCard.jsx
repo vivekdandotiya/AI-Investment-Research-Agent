@@ -33,7 +33,7 @@ export default function NewsSentimentCard({ sentimentSummary }) {
   const style = getSentimentStyles();
 
   return (
-    <div className="premium-card rounded-2xl p-6 space-y-6 text-left bg-white">
+    <div className="bg-white border-2 border-black text-black rounded-2xl p-6 space-y-6 text-left shadow-[4px_4px_0px_rgba(0,0,0,1)] relative overflow-hidden">
       <div className="flex items-center justify-between border-b-2 border-black pb-4">
         <div className="flex items-center space-x-3">
           <div className="p-2.5 bg-slate-100 border-2 border-black rounded-xl text-black">
@@ -58,7 +58,7 @@ export default function NewsSentimentCard({ sentimentSummary }) {
             <span>Sentiment Consensus Meter</span>
             <span className="font-mono text-black">{sentiment} Overview</span>
           </div>
-          <div className="h-3.5 w-full bg-slate-100 border-2 border-black rounded-full overflow-hidden relative">
+          <div className="h-3.5 w-full bg-slate-150 bg-slate-100 border-2 border-black rounded-full overflow-hidden relative">
             <div className={`h-full rounded-full ${style.barColor} ${style.percent} transition-all duration-1000 ease-out`} />
             {/* neutral center index indicator tick */}
             <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-black/25" title="Neutral line" />

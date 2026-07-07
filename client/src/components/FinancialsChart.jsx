@@ -95,7 +95,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
             </div>
             <div>
               <h3 className="text-base font-bold text-black tracking-wide font-display leading-none">Historical Financial Performance</h3>
-              <p className="text-[9px] text-slate-555 text-slate-500 font-extrabold uppercase tracking-widest mt-1.5 font-display">Annual Revenue vs Net Income ({valSuffix})</p>
+              <p className="text-[9px] text-slate-550 text-slate-500 font-extrabold uppercase tracking-widest mt-1.5 font-display">Annual Revenue vs Net Income ({valSuffix})</p>
             </div>
           </div>
           <span className="text-[9px] font-mono font-bold px-2 py-1 bg-slate-100 border-2 border-black rounded text-black shadow-[1.5px_1.5px_0px_rgba(0,0,0,1)]">
@@ -136,33 +136,33 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
           </div>
           <div>
             <h3 className="text-base font-bold text-black tracking-wide font-display leading-none">Financial Analysis</h3>
-            <p className="text-[9px] text-slate-555 text-slate-500 font-extrabold uppercase tracking-widest mt-1.5 font-display">Ratio Bulletins & Strengths</p>
+            <p className="text-[9px] text-slate-550 text-slate-500 font-extrabold uppercase tracking-widest mt-1.5 font-display">Ratio Bulletins & Strengths</p>
           </div>
         </div>
 
-        <div className="space-y-5 flex-1 overflow-y-auto pr-1 text-xs md:text-sm">
+        <div className="space-y-5 flex-1 overflow-y-auto pr-1 text-xs md:text-sm text-slate-800">
           <div className="space-y-1.5">
-            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
+            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-850 uppercase tracking-widest font-display">
               <DollarSign className="w-3.5 h-3.5 text-black" />
               <span>Revenue Growth Trends</span>
             </div>
-            <p className="text-slate-705 text-slate-700 font-semibold leading-relaxed pl-5.5">{revenueGrowth}</p>
+            <p className="text-slate-700 font-semibold leading-relaxed pl-5.5">{revenueGrowth}</p>
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
+            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-850 uppercase tracking-widest font-display">
               <Landmark className="w-3.5 h-3.5 text-black" />
               <span>Operating Efficiency</span>
             </div>
-            <p className="text-slate-705 text-slate-700 font-semibold leading-relaxed pl-5.5">{profitability}</p>
+            <p className="text-slate-700 font-semibold leading-relaxed pl-5.5">{profitability}</p>
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
+            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-850 uppercase tracking-widest font-display">
               <Landmark className="w-3.5 h-3.5 text-black" />
               <span>Balance sheet structure</span>
             </div>
-            <p className="text-slate-705 text-slate-700 font-semibold leading-relaxed pl-5.5">{balanceSheet}</p>
+            <p className="text-slate-700 font-semibold leading-relaxed pl-5.5">{balanceSheet}</p>
           </div>
         </div>
       </div>

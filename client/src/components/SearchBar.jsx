@@ -23,7 +23,7 @@ export default function SearchBar({ onSearch, isLoading, sandboxMode, setSandbox
   return (
     <div className="w-full space-y-5">
       {/* search input box container */}
-      <form onSubmit={handleSubmit} className="relative w-full">
+      <form onSubmit={handleSubmit} className="relative w-full text-left">
         <div className="relative flex items-center bg-white rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus-within:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus-within:-translate-x-0.5 focus-within:-translate-y-0.5 transition-all duration-150">
           <div className="absolute left-4 text-black">
             <Search className="w-5 h-5" />
@@ -33,7 +33,7 @@ export default function SearchBar({ onSearch, isLoading, sandboxMode, setSandbox
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Enter company name or ticker..."
-            className="w-full py-4 pl-12 pr-36 bg-transparent text-black placeholder-slate-500 focus:outline-none focus:ring-0 border-none font-sans text-sm md:text-base font-semibold"
+            className="w-full py-4 pl-12 pr-36 bg-transparent text-black placeholder-slate-550 focus:outline-none focus:ring-0 border-none font-sans text-sm md:text-base font-semibold"
             disabled={isLoading}
           />
           <div className="absolute right-2">

@@ -72,6 +72,49 @@ const getLocalMockData = (companyName) => {
       sentiment: invScore > 75 ? "Bullish" : "Bearish",
       highlights: `Recent product launches and quarterly earnings announcements have surpassed street estimates, reinforcing investor confidence in long-term earnings capability.`
     },
+    stockPerformance: (() => {
+      if (normalized.includes('tesla')) {
+        return {
+          ticker: "TSLA",
+          recentHikeOrDecline: "Stock hiked 24.5% over the past 12 months with massive volatility, responding to FSD rollout gains and energy storage growth, offset by competitive price pressures.",
+          isHikedRecently: true,
+          oneYearReturn: "+24.5%",
+          previousYearDrop: "-44.2% from peak drawdowns"
+        };
+      } else if (normalized.includes('intel') || normalized.includes('boeing')) {
+        return {
+          ticker: normalized.includes('intel') ? "INTC" : "BA",
+          recentHikeOrDecline: "Stock declined 38.2% over the past year due to data center market share loss, manufacturing delays, and high cash burn from foundry expansion.",
+          isHikedRecently: false,
+          oneYearReturn: "-38.2%",
+          previousYearDrop: "-52.6% drop from its 52-week peak"
+        };
+      } else if (normalized.includes('nvidia') || normalized.includes('nvda')) {
+        return {
+          ticker: "NVDA",
+          recentHikeOrDecline: "Stock hiked 182.4% over the last 12 months, driven by explosive global demand for AI compute architectures and datacenter GPU supply dominance.",
+          isHikedRecently: true,
+          oneYearReturn: "+182.4%",
+          previousYearDrop: "-12.4% temporary profit-taking pullback"
+        };
+      } else if (normalized.includes('apple') || normalized.includes('aapl')) {
+        return {
+          ticker: "AAPL",
+          recentHikeOrDecline: "Stock hiked 31.8% over the past year, supported by Apple Intelligence product cycle anticipation, stable premium hardware demand, and aggressive stock buybacks.",
+          isHikedRecently: true,
+          oneYearReturn: "+31.8%",
+          previousYearDrop: "-9.5% from 52-week high"
+        };
+      } else {
+        return {
+          ticker: companyName.substring(0, 4).toUpperCase().replace(/[^A-Z]/g, ''),
+          recentHikeOrDecline: "Stock hiked 14.8% over the last year, exhibiting stable consolidation and consistent support aligning with broader sector growth.",
+          isHikedRecently: true,
+          oneYearReturn: "+14.8%",
+          previousYearDrop: "-15.2% from peak consolidation level"
+        };
+      }
+    })(),
     // agents ke detailed markdown reports
     researchReport: `### Business Review for ${companyName}
 * **Sector**: ${sector}
@@ -93,16 +136,37 @@ const getLocalMockData = (companyName) => {
   };
 };
 
+const isMissingLlmKey = (apiKey) => (
+  !apiKey || apiKey === 'your_groq_api_key_here'
+);
+
+// Groq key validation - gsk_ se start hoti hai
+const isLikelyLlmApiKey = (apiKey) => (
+  typeof apiKey === 'string' && apiKey.trim().length > 10
+);
+
+const getLlmApiKey = () => (
+  process.env.GROQ_API_KEY || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY
+);
+
+const getLlmKeyError = () => new Error(
+  'Invalid API key. server/.env me GROQ_API_KEY=gsk_... set karo. Free key yahan se lo: https://console.groq.com'
+);
+
 // synchronous analysis execution logic (CORS/API calls)
 export async function analyzeCompany(companyName, useMockData = false) {
-  const apiKey = process.env.GOOGLE_API_KEY;
+  const apiKey = getLlmApiKey();
 
   // agar key missing ho to automatic mock data return karo
-  if (useMockData || !apiKey || apiKey === 'your_gemini_api_key_here') {
+  if (useMockData || isMissingLlmKey(apiKey)) {
     if (!useMockData) {
-      console.warn("GOOGLE_API_KEY config me nahi mili! Automatic mock mode load kar rhe hain.");
+      console.warn("GROQ_API_KEY config me nahi mili! Automatic mock mode load kar rhe hain.");
     }
     return getLocalMockData(companyName);
+  }
+
+  if (!isLikelyLlmApiKey(apiKey)) {
+    throw getLlmKeyError();
   }
 
   // sequentially agents chala kar report compile kar rahe hain
@@ -131,15 +195,15 @@ export async function analyzeCompany(companyName, useMockData = false) {
 
 // streaming workflow execution logic (SSE)
 export async function streamAnalyzeCompany(companyName, useMockData = false, onEvent = () => {}) {
-  const apiKey = process.env.GOOGLE_API_KEY;
+  const apiKey = getLlmApiKey();
 
   // sandbox/fallback mode check
-  if (useMockData || !apiKey || apiKey === 'your_gemini_api_key_here') {
+  if (useMockData || isMissingLlmKey(apiKey)) {
     const isFallback = !useMockData;
     onEvent({ 
       status: 'warning', 
       message: isFallback 
-        ? 'Aler: Gemini API Key nahi mila. Sandbox Simulation Mode active ho rha hai...' 
+        ? 'Aler: API Key nahi mila. Sandbox Simulation Mode active ho rha hai...' 
         : 'Sandbox simulation execute ho rahi hai...' 
     });
 
@@ -170,27 +234,59 @@ export async function streamAnalyzeCompany(companyName, useMockData = false, onE
     return;
   }
 
+  if (!isLikelyLlmApiKey(apiKey)) {
+    const error = getLlmKeyError();
+    onEvent({ status: 'error', message: `Configuration error: ${error.message}` });
+    throw error;
+  }
+
   try {
+    // rate limit se bachne ke liye delay + auto retry wrapper
+    const rateLimitDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    // Groq free tier rate limit auto-retry wrapper
+    const withRetry = async (fn, maxRetries = 3) => {
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          return await fn();
+        } catch (err) {
+          // agar 429 rate limit error hai to retry-after duration wait karo
+          if (err.status === 429 && attempt < maxRetries) {
+            const retryAfter = parseInt(err.headers?.get?.('retry-after') || '15', 10);
+            const waitTime = (retryAfter + 2) * 1000; // extra 2 seconds buffer
+            onEvent({ status: 'warning', message: `Rate limit hit — ${retryAfter}s cooldown wait, auto-retry attempt ${attempt}/${maxRetries}...` });
+            await rateLimitDelay(waitTime);
+          } else {
+            throw err;
+          }
+        }
+      }
+    };
+
     // 1. Research Agent
-    const researchReport = await runResearchAgent(companyName, apiKey, onEvent);
+    const researchReport = await withRetry(() => runResearchAgent(companyName, apiKey, onEvent));
+    await rateLimitDelay(12000); // Groq free tier 6K TPM buffer
     
     // 2. Financial Agent
-    const financialReport = await runFinancialAgent(companyName, apiKey, onEvent);
+    const financialReport = await withRetry(() => runFinancialAgent(companyName, apiKey, onEvent));
+    await rateLimitDelay(12000);
 
     // 3. News Agent
-    const newsReport = await runNewsAgent(companyName, apiKey, onEvent);
+    const newsReport = await withRetry(() => runNewsAgent(companyName, apiKey, onEvent));
+    await rateLimitDelay(12000);
 
     // 4. Risk Agent
-    const riskReport = await runRiskAgent(companyName, apiKey, onEvent);
+    const riskReport = await withRetry(() => runRiskAgent(companyName, apiKey, onEvent));
+    await rateLimitDelay(12000);
 
     // 5. Decision Agent
-    const decision = await runDecisionAgent({
+    const decision = await withRetry(() => runDecisionAgent({
       companyName,
       researchReport,
       financialReport,
       newsReport,
       riskReport
-    }, apiKey, onEvent);
+    }, apiKey, onEvent));
 
     // full report complete data packet stream close event me bheja
     onEvent({

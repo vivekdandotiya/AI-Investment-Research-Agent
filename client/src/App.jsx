@@ -4,6 +4,7 @@ import SearchBar from './components/SearchBar';
 import AgentTerminal from './components/AgentTerminal';
 import RecommendationCard from './components/RecommendationCard';
 import CompanyProfileCard from './components/CompanyProfileCard';
+import StockPerformanceCard from './components/StockPerformanceCard';
 import FinancialsChart from './components/FinancialsChart';
 import StrengthsWeaknesses from './components/StrengthsWeaknesses';
 import NewsSentimentCard from './components/NewsSentimentCard';
@@ -62,7 +63,7 @@ export default function App() {
       console.error('SSE stream disconnect ho gaya:', err);
       setLogs((prev) => [
         ...prev,
-        { status: 'error', message: 'API key authorization failed, or Gemini API is not enabled in your project.', timestamp: Date.now() },
+        { status: 'error', message: 'Server connection lost — rate limit ya network issue ho sakta hai. Retry karo.', timestamp: Date.now() },
       ]);
       setIsFailed(true);
       setIsLoading(false);
@@ -140,7 +141,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative bg-transparent">
+    <div className="min-h-screen flex flex-col relative bg-transparent text-slate-950">
       {/* Navigation Header */}
       <header className="w-full border-b-2 border-black bg-white sticky top-0 z-50 shadow-[0_2px_4px_rgba(0,0,0,0.05)]">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -236,28 +237,28 @@ export default function App() {
             <div className="premium-card rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center space-x-4">
                 <div className="relative w-14 h-14 shrink-0 flex items-center justify-center">
-                  <div className={`absolute inset-0 rounded-full border-4 ${isFailed ? 'border-red-600' : 'border-slate-100 border-t-black animate-spin'}`}></div>
+                  <div className={`absolute inset-0 rounded-full border-4 ${isFailed ? 'border-red-650 border-red-600' : 'border-slate-100 border-t-black animate-spin'}`}></div>
                   <Cpu className={`w-5 h-5 ${isFailed ? 'text-red-600' : 'text-black'}`} />
                 </div>
-                <div>
-                  <h3 className="text-sm font-black text-black font-display uppercase tracking-wider text-left">
+                <div className="text-left">
+                  <h3 className="text-sm font-black text-black font-display uppercase tracking-wider">
                     {isFailed ? 'API Connection Failed' : `Analyzing ${activeCompany}`}
                   </h3>
-                  <p className="text-xs text-slate-800 mt-1 font-bold text-left">
+                  <p className="text-xs text-slate-800 mt-1 font-bold">
                     {isFailed ? 'Verify your API keys configuration in backend server/.env' : 'Multi-agent committee parsing market data...'}
                   </p>
                 </div>
               </div>
               
-              <div className={`flex items-center space-x-2 text-xs font-mono font-bold border-2 border-black px-3 py-1 rounded-lg shadow-[2px_2px_0px_rgba(0,0,0,1)] ${isFailed ? 'bg-red-100 text-red-950' : 'bg-slate-100 text-black'}`}>
-                <span className={`w-2.5 h-2.5 rounded-full mr-2 ${isFailed ? 'bg-red-600' : 'bg-black animate-pulse'}`}></span>
+              <div className={`flex items-center space-x-2 text-xs font-mono font-bold border-2 border-black px-3 py-1.5 rounded-lg shadow-[2px_2px_0px_rgba(0,0,0,1)] ${isFailed ? 'bg-red-100 text-red-950' : 'bg-slate-100 text-black'}`}>
+                <span className={`w-2.5 h-2.5 rounded-full mr-1.5 ${isFailed ? 'bg-red-650 bg-red-600' : 'bg-black animate-pulse'}`}></span>
                 <span>{isFailed ? 'SCAN FAILED' : 'PROCESSING STAGES'}</span>
               </div>
             </div>
 
             {/* progress logs output console */}
             <div className="space-y-4">
-              <div className="space-y-2">
+              <div className="space-y-2 text-left">
                 <h3 className="text-[10px] font-extrabold text-slate-800 uppercase tracking-widest flex items-center">
                   <Terminal className="w-3.5 h-3.5 text-black mr-2" />
                   Agent Pipeline Logs
@@ -292,9 +293,10 @@ export default function App() {
         {result && !isLoading && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-fade-in">
             
-            {/* LEFT SIDEBAR: corporate summaries & sentiment consensus */}
+            {/* LEFT SIDEBAR: corporate summaries, stock performance & sentiment consensus */}
             <div className="lg:col-span-4 space-y-6">
               <CompanyProfileCard companyName={activeCompany} profile={result.companyProfile} />
+              <StockPerformanceCard performance={result.stockPerformance} />
               <NewsSentimentCard sentimentSummary={result.sentimentSummary} />
             </div>
 
@@ -307,10 +309,8 @@ export default function App() {
                 confidenceScore={result.confidenceScore}
                 riskScore={result.riskScore}
                 explanation={result.explanation}
-              />
-
-              {/* documents reports tabs selectors */}
-              <div className="flex border-b-2 border-black overflow-x-auto text-[10px] font-extrabold tracking-widest uppercase font-display">
+              />              {/* documents reports tabs selectors */}
+              <div className="flex border-b-2 border-black overflow-x-auto text-[10px] font-extrabold tracking-widest uppercase font-display bg-slate-100 p-1.5 rounded-t-xl gap-2 border-t-2 border-x-2">
                 {[
                   { id: 'overview', label: 'Consensus Dashboard', icon: <Layers className="w-3.5 h-3.5" /> },
                   { id: 'research', label: 'Business Profile', icon: <Cpu className="w-3.5 h-3.5" /> },
@@ -321,10 +321,10 @@ export default function App() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center space-x-2 px-4.5 py-3 border-t-2 border-x-2 border-transparent transition-all duration-150 whitespace-nowrap -mb-[2px] ${
+                    className={`flex items-center space-x-2 px-4.5 py-2.5 border-2 transition-all duration-150 whitespace-nowrap rounded-lg ${
                       activeTab === tab.id
-                        ? 'border-black bg-black text-white shadow-[2px_0px_0px_rgba(0,0,0,1)] rounded-t-lg font-bold'
-                        : 'text-slate-650 hover:text-black hover:bg-slate-50'
+                        ? 'border-black bg-white text-black shadow-[2px_2px_0px_rgba(0,0,0,1)] font-bold'
+                        : 'border-transparent text-slate-600 hover:text-black hover:bg-white/50'
                     }`}
                   >
                     {tab.icon}
@@ -436,7 +436,7 @@ export default function App() {
               </div>
 
               <p className="text-slate-800 text-sm font-semibold leading-relaxed">
-                InvesTrack operates an advanced autonomous AI pipeline powered by **LangChain.js** and **Google Gemini** models. When you request a company analysis, the engine invokes a series of specialized AI agents to compile comprehensive research:
+                InvesTrack operates an advanced autonomous AI pipeline powered by **LangChain.js** and **Groq** models. When you request a company analysis, the engine invokes a series of specialized AI agents to compile comprehensive research:
               </p>
 
               {/* sub-agents description bullets */}
@@ -453,7 +453,7 @@ export default function App() {
                   <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">2</div>
                   <div>
                     <strong className="text-black font-bold uppercase font-display block text-xs">Financial Analysis Agent</strong>
-                    Processes earnings balance sheets and cash flow data, evaluating gross margins, debt leverage, and CAGR profiles.
+                    Processes earnings balance sheets and cash flow data, evaluating gross margins, debt leverage, CAGR profiles, and stock price performance.
                   </div>
                 </div>
 
@@ -500,7 +500,7 @@ export default function App() {
       <footer className="w-full text-center py-6 text-[10px] text-slate-800 border-t border-black bg-white mt-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 font-bold">
         <p>© {new Date().getFullYear()} InvesTrack Inc. For demonstrative investment screening purposes only.</p>
         <p className="uppercase tracking-widest font-display">
-          Powered by Express, LangChain.js & Google Gemini
+          Powered by Express, LangChain.js & Groq
         </p>
       </footer>
     </div>

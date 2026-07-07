@@ -1,4 +1,4 @@
-import { ChatGoogle } from "@langchain/google";
+import { ChatGroq } from "@langchain/groq";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { searchWeb } from "../searchService.js";
 
@@ -12,8 +12,8 @@ export async function runNewsAgent(companyName, apiKey, onProgress = () => {}) {
 
   onProgress({ status: 'news', message: 'News Agent: Positive aur negative catalysts categories classify ho rahi hain...' });
 
-  const model = new ChatGoogle({
-    model: "gemini-2.0-flash",
+  const model = new ChatGroq({
+    model: "llama-3.1-8b-instant",
     apiKey: apiKey,
     temperature: 0.2
   });
@@ -44,7 +44,7 @@ List 2-4 negative concerns or signals (e.g., negative press, supply chain issues
 State the overall sentiment clearly: **BULLISH**, **NEUTRAL**, or **BEARISH**. Follow up with a 2-3 sentence justification explaining the prevailing market consensus.
 `);
 
-  const resultsText = searchResults.results.map((r, i) => `[${i+1}] Title: ${r.title}\nUrl: ${r.url}\nSnippet: ${r.content}\n`).join('\n');
+  const resultsText = searchResults.results.slice(0, 3).map((r, i) => `[${i+1}] Title: ${r.title}\nSnippet: ${r.content}\n`).join('\n');
 
   const chain = prompt.pipe(model);
   const response = await chain.invoke({

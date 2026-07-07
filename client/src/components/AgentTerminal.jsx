@@ -89,7 +89,7 @@ export default function AgentTerminal({ logs = [], isRunning }) {
         return {
           textColor: 'text-red-950 bg-red-100 border-red-300',
           badgeText: 'FAILED',
-          icon: <ShieldAlert className="w-3 h-3 text-red-800" />
+          icon: <ShieldAlert className="w-3 h-3 text-red-805 text-red-800" />
         };
       default:
         return {
@@ -133,7 +133,7 @@ export default function AgentTerminal({ logs = [], isRunning }) {
 
       {/* terminal bottom active state banner */}
       {isRunning && (
-        <div className="border-t border-black/10 pt-3.5 mt-3.5 flex items-center justify-between text-[9px] font-black tracking-widest text-slate-655 text-slate-600">
+        <div className="border-t border-black/10 pt-3.5 mt-3.5 flex items-center justify-between text-[9px] font-black tracking-widest text-slate-600">
           <span className="flex items-center uppercase">
             <span className="w-1.5 h-1.5 rounded-full bg-black animate-ping mr-2" />
             Active pipeline execution: Stream alive

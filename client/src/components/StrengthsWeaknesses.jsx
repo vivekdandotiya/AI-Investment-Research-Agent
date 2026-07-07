@@ -7,7 +7,7 @@ export default function StrengthsWeaknesses({ strengths = [], concerns = [] }) {
       {/* positive points (strengths) show karne ke liye panel */}
       <div className="premium-card rounded-2xl p-6 border-emerald-500/10 shadow-lg bg-white">
         <div className="flex items-center space-x-3 border-b-2 border-black pb-4 mb-5">
-          <div className="p-2.5 bg-emerald-100 border-2 border-black rounded-xl text-emerald-800">
+          <div className="p-2.5 bg-emerald-100 border-2 border-black rounded-xl text-emerald-805 text-emerald-800">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
@@ -48,7 +48,7 @@ export default function StrengthsWeaknesses({ strengths = [], concerns = [] }) {
           ) : (
             concerns.map((concern, index) => (
               <li key={index} className="flex items-start space-x-3 text-xs md:text-sm font-semibold">
-                <AlertTriangle className="w-4.5 h-4.5 text-rose-650 text-rose-600 shrink-0 mt-0.5" />
+                <AlertTriangle className="w-4.5 h-4.5 text-rose-600 shrink-0 mt-0.5" />
                 <span className="text-slate-700 leading-relaxed">{concern}</span>
               </li>
             ))

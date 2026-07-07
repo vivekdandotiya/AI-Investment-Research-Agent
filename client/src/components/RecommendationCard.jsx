@@ -45,13 +45,13 @@ export default function RecommendationCard({ recommendation, investmentScore, co
           {/* gauge ke center me score value display kiya */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-2xl font-black font-mono text-black leading-none">{score}</span>
-            <span className="text-[9px] text-slate-555 text-slate-500 font-extrabold tracking-widest uppercase mt-0.5">%</span>
+            <span className="text-[9px] text-slate-555 text-slate-550 text-slate-500 font-extrabold tracking-widest uppercase mt-0.5">%</span>
           </div>
         </div>
 
         <div className="flex items-center space-x-1.5 mt-3 z-10">
           {icon}
-          <span className="text-slate-600 text-[10px] font-extrabold tracking-widest uppercase font-display">{label}</span>
+          <span className="text-slate-655 text-slate-600 text-[10px] font-extrabold tracking-widest uppercase font-display">{label}</span>
         </div>
       </div>
     );
@@ -61,10 +61,10 @@ export default function RecommendationCard({ recommendation, investmentScore, co
     <div className={`premium-card p-0 rounded-2xl overflow-hidden ${
       isInvest ? 'glow-border-emerald' : 'glow-border-rose'
     }`}>
-      <div className="p-6 md:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10 bg-white">
+      <div className="p-6 md:p-8 flex flex-col gap-6 relative z-10 bg-white">
         
         {/* final recommendation tag aur details verdict block */}
-        <div className="flex-1 space-y-4 text-left">
+        <div className="w-full space-y-4 text-left">
           <div className="flex items-center space-x-2" title="AI research agents collective portfolio verdict consensus">
             <BadgeDollarSign className={`w-4.5 h-4.5 ${isInvest ? 'text-emerald-600' : 'text-rose-600'}`} />
             <span className="text-[10px] font-extrabold text-slate-600 tracking-widest uppercase font-display">
@@ -76,7 +76,7 @@ export default function RecommendationCard({ recommendation, investmentScore, co
             <div className={`text-4xl md:text-5xl font-black tracking-widest font-display px-8 py-3.5 rounded-2xl text-center border-2 border-black leading-none ${
               isInvest 
                 ? 'bg-emerald-100 text-emerald-950 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]' 
-                : 'bg-rose-100 text-rose-950 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
+                : 'bg-rose-100 text-rose-955 text-rose-900 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
             }`}>
               {recommendation}
             </div>
@@ -104,8 +104,8 @@ export default function RecommendationCard({ recommendation, investmentScore, co
           </div>
         </div>
 
-        {/* right display metrics gauges panels */}
-        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 lg:shrink-0">
+        {/* right display metrics gauges panels - placed in a clean bottom grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full border-t-2 border-black pt-6">
           {renderGauge(
             investmentScore, 
             "Investment Quality", 

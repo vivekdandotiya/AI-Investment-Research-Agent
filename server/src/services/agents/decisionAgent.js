@@ -1,4 +1,4 @@
-import { ChatGoogle } from "@langchain/google";
+import { ChatGroq } from "@langchain/groq";
 import { PromptTemplate } from "@langchain/core/prompts";
 
 // Investment Decision Agent ke zariye human verdict compile ho rha hai
@@ -7,11 +7,11 @@ export async function runDecisionAgent({ companyName, researchReport, financialR
   onProgress({ status: 'deciding', message: 'Decision Agent: CIO panel research reports evaluate karke final score calculate kar rha hai...' });
 
   // gemini model initialize - JSON return mode config kiya isme
-  const model = new ChatGoogle({
-    model: "gemini-2.0-flash",
+  const model = new ChatGroq({
+    model: "llama-3.1-8b-instant",
     apiKey: apiKey,
-    temperature: 0.3,
-    responseMimeType: "application/json" // Gemini ko restrict kar rahe hain taaki strictly clean JSON return kare
+    temperature: 0.3
+    // JSON output prompt me enforce ho rha hai, Groq natively JSON mode support nahi karta
   });
 
   const prompt = PromptTemplate.fromTemplate(`
@@ -57,6 +57,12 @@ You must assess:
 10. **sentimentSummary**: An object with fields:
     - "sentiment": "Bullish", "Neutral", or "Bearish".
     - "highlights": Summary of recent news.
+11. **stockPerformance**: An object detailing recent price movement:
+    - "ticker": Stock ticker symbol (e.g. "AAPL", "NVDA", "TSLA").
+    - "recentHikeOrDecline": A 1-2 sentence summary of recent stock hikes or declines, highlighting 1-year returns or YTD performance.
+    - "isHikedRecently": Boolean (true if stock price has hiked/gained overall over the past year, false if it has declined/stagnated).
+    - "oneYearReturn": Estimated or actual 1-year return percentage (e.g. "+42%", "-12%", "+120%").
+    - "previousYearDrop": A brief description of the previous year's drop/drawdown of shares from its peak (e.g. "-15.2% from peak", "47.88% drop", or "None (+120% gain)").
 
 Output MUST follow this JSON schema exactly:
 {{
@@ -80,6 +86,13 @@ Output MUST follow this JSON schema exactly:
   "sentimentSummary": {{
     "sentiment": "Bullish" | "Neutral" | "Bearish",
     "highlights": "string"
+  }},
+  "stockPerformance": {{
+    "ticker": "string",
+    "recentHikeOrDecline": "string",
+    "isHikedRecently": boolean,
+    "oneYearReturn": "string",
+    "previousYearDrop": "string"
   }}
 }}
 `);
@@ -96,8 +109,22 @@ Output MUST follow this JSON schema exactly:
   onProgress({ status: 'deciding_complete', message: 'Decision Agent: Portfolio verdict report compile ho gayi hai!' });
   
   try {
+    let cleanContent = response.content.trim();
+    
+    // remove markdown block wrapper if present
+    if (cleanContent.startsWith('```')) {
+      cleanContent = cleanContent.replace(/^```(json)?/, '').replace(/```$/, '').trim();
+    }
+    
+    // Extract everything between first '{' and last '}'
+    const firstBrace = cleanContent.indexOf('{');
+    const lastBrace = cleanContent.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1) {
+      cleanContent = cleanContent.substring(firstBrace, lastBrace + 1);
+    }
+    
     // string response ko JSON parse kiya
-    const jsonResult = JSON.parse(response.content);
+    const jsonResult = JSON.parse(cleanContent);
     return jsonResult;
   } catch (error) {
     console.error("Gemini response parse karne me fail ho gaya. Response content tha:", response.content);

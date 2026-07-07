@@ -1,4 +1,4 @@
-import { ChatGoogle } from "@langchain/google";
+import { ChatGroq } from "@langchain/groq";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { searchWeb } from "../searchService.js";
 
@@ -12,8 +12,8 @@ export async function runRiskAgent(companyName, apiKey, onProgress = () => {}) {
 
   onProgress({ status: 'risks', message: 'Risk Agent: Competitive threats aur regulatory risk indexes evaluate kar rahe hain...' });
 
-  const model = new ChatGoogle({
-    model: "gemini-2.0-flash",
+  const model = new ChatGroq({
+    model: "llama-3.1-8b-instant",
     apiKey: apiKey,
     temperature: 0.2
   });
@@ -44,7 +44,7 @@ Identify aggressive maneuvers from rivals, low barriers to entry, pricing wars, 
 Discuss financial structure risks, cash burn rates, interest rate sensitivity, currency fluctuation exposures, and credit risks.
 `);
 
-  const resultsText = searchResults.results.map((r, i) => `[${i+1}] Title: ${r.title}\nUrl: ${r.url}\nSnippet: ${r.content}\n`).join('\n');
+  const resultsText = searchResults.results.slice(0, 3).map((r, i) => `[${i+1}] Title: ${r.title}\nSnippet: ${r.content}\n`).join('\n');
 
   const chain = prompt.pipe(model);
   const response = await chain.invoke({

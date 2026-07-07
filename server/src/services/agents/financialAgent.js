@@ -13,7 +13,7 @@ export async function runFinancialAgent(companyName, apiKey, onProgress = () => 
   onProgress({ status: 'financials', message: 'Financial Agent: Balance sheet aur capital structures details examine kar rahe hain...' });
 
   const model = new ChatGoogle({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     apiKey: apiKey,
     temperature: 0.2
   });

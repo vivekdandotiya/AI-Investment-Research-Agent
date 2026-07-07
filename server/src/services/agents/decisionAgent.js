@@ -8,7 +8,7 @@ export async function runDecisionAgent({ companyName, researchReport, financialR
 
   // gemini model initialize - JSON return mode config kiya isme
   const model = new ChatGoogle({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     apiKey: apiKey,
     temperature: 0.3,
     responseMimeType: "application/json" // Gemini ko restrict kar rahe hain taaki strictly clean JSON return kare

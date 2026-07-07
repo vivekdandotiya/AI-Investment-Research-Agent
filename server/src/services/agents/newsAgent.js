@@ -13,7 +13,7 @@ export async function runNewsAgent(companyName, apiKey, onProgress = () => {}) {
   onProgress({ status: 'news', message: 'News Agent: Positive aur negative catalysts categories classify ho rahi hain...' });
 
   const model = new ChatGoogle({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     apiKey: apiKey,
     temperature: 0.2
   });

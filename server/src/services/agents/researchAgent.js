@@ -14,7 +14,7 @@ export async function runResearchAgent(companyName, apiKey, onProgress = () => {
 
   // gemini model initialize kiya
   const model = new ChatGoogle({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     apiKey: apiKey,
     temperature: 0.2
   });

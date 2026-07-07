@@ -13,7 +13,7 @@ export async function runRiskAgent(companyName, apiKey, onProgress = () => {}) {
   onProgress({ status: 'risks', message: 'Risk Agent: Competitive threats aur regulatory risk indexes evaluate kar rahe hain...' });
 
   const model = new ChatGoogle({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     apiKey: apiKey,
     temperature: 0.2
   });

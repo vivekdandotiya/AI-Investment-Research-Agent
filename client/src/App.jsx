@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Terminal, Activity, TrendingUp, ShieldAlert, Cpu, Layers, ArrowLeft, HelpCircle, X } from 'lucide-react';
+import { Sparkles, Terminal, Activity, TrendingUp, ShieldAlert, Cpu, Layers, ArrowLeft, HelpCircle, X, RotateCcw } from 'lucide-react';
 import SearchBar from './components/SearchBar';
 import AgentTerminal from './components/AgentTerminal';
 import RecommendationCard from './components/RecommendationCard';
@@ -12,6 +12,7 @@ export default function App() {
   const [activeCompany, setActiveCompany] = useState('');
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFailed, setIsFailed] = useState(false); // api failed state tracker
   const [logs, setLogs] = useState([]);
   const [sandboxMode, setSandboxMode] = useState(true);
   const [activeTab, setActiveTab] = useState('overview'); // tabs track: overview, research, financials, news, risks
@@ -20,6 +21,7 @@ export default function App() {
   // company search handler - backend sse route trigger kar rha hai
   const handleSearch = (companyName) => {
     setIsLoading(true);
+    setIsFailed(false);
     setActiveCompany(companyName);
     setLogs([]);
     setResult(null);
@@ -41,6 +43,7 @@ export default function App() {
             ...prev,
             { status: 'error', message: data.message, timestamp: Date.now() },
           ]);
+          setIsFailed(true);
           setIsLoading(false);
           eventSource.close();
         } else {
@@ -59,8 +62,9 @@ export default function App() {
       console.error('SSE stream disconnect ho gaya:', err);
       setLogs((prev) => [
         ...prev,
-        { status: 'error', message: 'Connection loose ho gaya ya server respond nahi kar raha. Pipeline close kiya.', timestamp: Date.now() },
+        { status: 'error', message: 'API key authorization failed, or Gemini API is not enabled in your project.', timestamp: Date.now() },
       ]);
+      setIsFailed(true);
       setIsLoading(false);
       eventSource.close();
     };
@@ -69,6 +73,7 @@ export default function App() {
   const resetToLanding = () => {
     setResult(null);
     setIsLoading(false);
+    setIsFailed(false);
     setLogs([]);
     setActiveCompany('');
   };
@@ -78,7 +83,7 @@ export default function App() {
     if (!text) return <p className="text-slate-500 italic font-semibold">Report content blank hai bhai.</p>;
     
     return (
-      <div className="space-y-4 text-slate-850 text-slate-800 font-sans text-sm md:text-base leading-relaxed text-left">
+      <div className="space-y-4 text-slate-800 font-sans text-sm md:text-base leading-relaxed text-left">
         {text.split('\n').map((line, index) => {
           const trimmed = line.trim();
           if (trimmed.startsWith('### ')) {
@@ -113,7 +118,7 @@ export default function App() {
           }
           if (trimmed.startsWith('>')) {
             return (
-              <blockquote key={index} className="border-l-4 border-black bg-slate-50 px-4 py-2 italic my-3 text-slate-600 rounded-r-lg">
+              <blockquote key={index} className="border-l-4 border-black bg-slate-50 px-4 py-2 italic my-3 text-slate-655 text-slate-600 rounded-r-lg">
                 {trimmed.replace('>', '').trim()}
               </blockquote>
             );
@@ -164,7 +169,7 @@ export default function App() {
               <span className="hidden sm:inline">HOW IT WORKS</span>
             </button>
 
-            {result && !isLoading && (
+            {(result || isFailed) && !isLoading && (
               <button
                 onClick={resetToLanding}
                 className="flex items-center space-x-1.5 px-3 py-1.5 bg-white border-2 border-black hover:bg-black hover:text-white rounded-lg text-xs font-bold text-black shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none transition-all hover:translate-x-0.5 hover:translate-y-0.5"
@@ -189,7 +194,7 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-6 py-8 flex-1 w-full flex flex-col justify-center relative z-10">
         
         {/* ================= STATE 1: LANDING PAGE (agar koi results ya loading active na ho) ================= */}
-        {!result && !isLoading && (
+        {!result && !isLoading && !isFailed && (
           <div className="max-w-2xl mx-auto w-full py-12 md:py-20 flex flex-col items-center justify-center space-y-10 text-center animate-fade-in">
             {/* landing hero heading area */}
             <div className="space-y-4">
@@ -225,39 +230,65 @@ export default function App() {
         )}
 
         {/* ================= STATE 2: PIPELINE SCANNING STATE & LOADER TERMINAL ================= */}
-        {isLoading && (
+        {(isLoading || isFailed) && (
           <div className="max-w-3xl mx-auto w-full space-y-8 py-10">
             {/* active loader banner */}
             <div className="premium-card rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center space-x-4">
                 <div className="relative w-14 h-14 shrink-0 flex items-center justify-center">
-                  <div className="absolute inset-0 rounded-full border-4 border-slate-100 border-t-black animate-spin"></div>
-                  <Cpu className="w-5 h-5 text-black" />
+                  <div className={`absolute inset-0 rounded-full border-4 ${isFailed ? 'border-red-600' : 'border-slate-100 border-t-black animate-spin'}`}></div>
+                  <Cpu className={`w-5 h-5 ${isFailed ? 'text-red-600' : 'text-black'}`} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-black font-display uppercase tracking-wider text-left">Analyzing {activeCompany}</h3>
-                  <p className="text-xs text-slate-800 mt-1 font-bold text-left">Multi-agent committee parsing market data...</p>
+                  <h3 className="text-sm font-black text-black font-display uppercase tracking-wider text-left">
+                    {isFailed ? 'API Connection Failed' : `Analyzing ${activeCompany}`}
+                  </h3>
+                  <p className="text-xs text-slate-800 mt-1 font-bold text-left">
+                    {isFailed ? 'Verify your API keys configuration in backend server/.env' : 'Multi-agent committee parsing market data...'}
+                  </p>
                 </div>
               </div>
               
-              <div className="flex items-center space-x-2 text-xs font-mono font-bold text-black border-2 border-black px-3 py-1 bg-slate-100 rounded-lg shadow-[2px_2px_0px_rgba(0,0,0,1)]">
-                <span className="w-2.5 h-2.5 rounded-full bg-black animate-pulse mr-2"></span>
-                <span>PROCESSING STAGES</span>
+              <div className={`flex items-center space-x-2 text-xs font-mono font-bold border-2 border-black px-3 py-1 rounded-lg shadow-[2px_2px_0px_rgba(0,0,0,1)] ${isFailed ? 'bg-red-100 text-red-950' : 'bg-slate-100 text-black'}`}>
+                <span className={`w-2.5 h-2.5 rounded-full mr-2 ${isFailed ? 'bg-red-600' : 'bg-black animate-pulse'}`}></span>
+                <span>{isFailed ? 'SCAN FAILED' : 'PROCESSING STAGES'}</span>
               </div>
             </div>
 
             {/* progress logs output console */}
-            <div className="space-y-2">
-              <h3 className="text-[10px] font-extrabold text-slate-800 uppercase tracking-widest flex items-center">
-                <Terminal className="w-3.5 h-3.5 text-black mr-2" />
-                Agent Pipeline Logs
-              </h3>
-              <AgentTerminal logs={logs} isRunning={isLoading} />
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h3 className="text-[10px] font-extrabold text-slate-800 uppercase tracking-widest flex items-center">
+                  <Terminal className="w-3.5 h-3.5 text-black mr-2" />
+                  Agent Pipeline Logs
+                </h3>
+                <AgentTerminal logs={logs} isRunning={isLoading} />
+              </div>
+
+              {/* error details alert & exit button */}
+              {isFailed && (
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 bg-amber-50 border-2 border-black rounded-xl shadow-[3px_3px_0px_rgba(0,0,0,1)] text-left">
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-black text-amber-950 font-display uppercase tracking-wide">Action Required</h4>
+                    <p className="text-xs text-slate-700 font-semibold leading-relaxed">
+                      This error is usually caused by an invalid/inactive key or disabled APIs in your developer console. 
+                      You can modify your <code className="bg-white px-1.5 py-0.5 border border-black rounded font-mono text-[10px]">server/.env</code> file, then click Go Back to retry.
+                    </p>
+                  </div>
+                  <button
+                    onClick={resetToLanding}
+                    className="flex items-center space-x-1.5 px-4 py-2.5 bg-white border-2 border-black hover:bg-black hover:text-white rounded-lg text-xs font-black text-black shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none transition-all hover:translate-x-0.5 hover:translate-y-0.5 shrink-0"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>BACK TO SEARCH</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {/* ================= STATE 3: FINAL SYNTHESIZED DASHBOARD VIEW ================= */}
+        {/* ================= STATE 3: FULL SYNTHESIZED DASHBOARD VIEW ================= */}
         {result && !isLoading && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-fade-in">
             
@@ -360,7 +391,7 @@ export default function App() {
                       <span className="text-[9px] font-extrabold font-mono px-3 py-1.5 bg-black text-white rounded border border-black tracking-wider">
                         RISK ASSESSMENT REPORT
                       </span>
-                      <span className="text-[9px] text-slate-550 font-bold uppercase tracking-wider font-display">STATUS: FINALIZED</span>
+                      <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider font-display">STATUS: FINALIZED</span>
                     </div>
                     {renderAgentMarkdown(result.riskReport)}
                   </div>

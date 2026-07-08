@@ -76,12 +76,14 @@ Output MUST follow this JSON schema exactly:
   "companyProfile": {{
     "sector": "string",
     "businessModel": "string",
-    "moat": "string"
+    "moat": "string",
+    "marketShare": "string"
   }},
   "financialSummary": {{
     "revenueGrowth": "string",
     "profitability": "string",
-    "balanceSheet": "string"
+    "balanceSheet": "string",
+    "bondsAndDebt": "string"
   }},
   "sentimentSummary": {{
     "sentiment": "Bullish" | "Neutral" | "Bearish",
@@ -92,7 +94,8 @@ Output MUST follow this JSON schema exactly:
     "recentHikeOrDecline": "string",
     "isHikedRecently": boolean,
     "oneYearReturn": "string",
-    "previousYearDrop": "string"
+    "previousYearDrop": "string",
+    "shareGrowthDetails": "string"
   }}
 }}
 `);

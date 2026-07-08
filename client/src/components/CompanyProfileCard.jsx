@@ -2,7 +2,7 @@ import React from 'react';
 import { Building2, Cpu, KeyRound, ArrowUpRight } from 'lucide-react';
 
 export default function CompanyProfileCard({ companyName, profile }) {
-  const { sector = 'N/A', businessModel = 'N/A', moat = 'N/A' } = profile || {};
+  const { sector = 'N/A', businessModel = 'N/A', moat = 'N/A', marketShare = 'N/A' } = profile || {};
 
   return (
     <div className="bg-white border-2 border-black text-black rounded-2xl p-6 space-y-6 flex flex-col justify-between text-left shadow-[4px_4px_0px_rgba(0,0,0,1)] relative overflow-hidden">
@@ -38,6 +38,16 @@ export default function CompanyProfileCard({ companyName, profile }) {
             </div>
             <p className="text-slate-800 text-sm leading-relaxed pl-5.5 font-semibold">
               {moat}
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2 text-[10px] font-black text-slate-800 uppercase tracking-widest font-display">
+              <Building2 className="w-3.5 h-3.5 text-black" />
+              <span>Sector Market Share</span>
+            </div>
+            <p className="text-slate-800 text-sm leading-relaxed pl-5.5 font-semibold">
+              {marketShare}
             </p>
           </div>
         </div>

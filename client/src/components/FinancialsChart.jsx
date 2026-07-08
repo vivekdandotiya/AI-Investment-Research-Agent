@@ -3,7 +3,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { DollarSign, Landmark, BarChart2 } from 'lucide-react';
 
 export default function FinancialsChart({ companyName, summary, investmentScore }) {
-  const { revenueGrowth = '', profitability = '', balanceSheet = '' } = summary || {};
+  const { revenueGrowth = '', profitability = '', balanceSheet = '', bondsAndDebt = '' } = summary || {};
 
   // different companies ke statistics fetch karne ka check (sandbox mode support)
   const getChartData = () => {
@@ -33,6 +33,14 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
         { year: '2025', Revenue: 52.4, 'Net Income': -0.8 },
         { year: '2026 (Est)', Revenue: 55.0, 'Net Income': 1.2 }
       ];
+    } else if (name.includes('greyorange') || name.includes('grey orange')) {
+      return [
+        { year: '2021', Revenue: 65, 'Net Income': -8 },
+        { year: '2022', Revenue: 85, 'Net Income': -5 },
+        { year: '2023', Revenue: 110, 'Net Income': 2 },
+        { year: '2024', Revenue: 145, 'Net Income': 12 },
+        { year: '2025 (Est)', Revenue: 190, 'Net Income': 22 }
+      ];
     }
 
     if (name.includes('apple') || name.includes('aapl')) {
@@ -59,7 +67,7 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
   };
 
   const data = getChartData();
-  const isBillion = !companyName.toLowerCase().includes('simulated') && data[0].Revenue > 8;
+  const isBillion = !companyName.toLowerCase().includes('simulated') && !companyName.toLowerCase().includes('greyorange') && data[0].Revenue > 8;
   const valSuffix = isBillion ? 'B' : 'M';
 
   // custom design elements tooltips inside Recharts graph
@@ -164,6 +172,16 @@ export default function FinancialsChart({ companyName, summary, investmentScore 
             </div>
             <p className="text-slate-700 font-semibold leading-relaxed pl-5.5">{balanceSheet}</p>
           </div>
+
+          {bondsAndDebt && (
+            <div className="space-y-1.5 border-t border-black/10 pt-3">
+              <div className="flex items-center space-x-2 text-[10px] font-black text-slate-850 uppercase tracking-widest font-display">
+                <Landmark className="w-3.5 h-3.5 text-black" />
+                <span>Bonds & Debt Profile</span>
+              </div>
+              <p className="text-slate-700 font-semibold leading-relaxed pl-5.5">{bondsAndDebt}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

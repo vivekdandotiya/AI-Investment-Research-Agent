@@ -4,7 +4,7 @@ import { TrendingUp, TrendingDown, Info } from 'lucide-react';
 export default function StockPerformanceCard({ performance }) {
   if (!performance) return null;
 
-  const { ticker = 'N/A', recentHikeOrDecline = '', isHikedRecently = true, oneYearReturn = 'N/A', previousYearDrop = 'N/A' } = performance;
+  const { ticker = 'N/A', recentHikeOrDecline = '', isHikedRecently = true, oneYearReturn = 'N/A', previousYearDrop = 'N/A', shareGrowthDetails = '' } = performance;
 
   return (
     <div className="bg-white border-2 border-black text-black rounded-2xl p-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] relative overflow-hidden text-left">
@@ -68,6 +68,16 @@ export default function StockPerformanceCard({ performance }) {
             </span>
           </div>
         </div>
+
+        {/* Share Growth & Valuation details */}
+        {shareGrowthDetails && shareGrowthDetails !== 'N/A' && (
+          <div className="border-t border-black/10 pt-3.5 mt-3.5 space-y-1">
+            <span className="text-[9px] font-extrabold text-slate-500 block uppercase tracking-wider leading-none">Share Growth & Valuation</span>
+            <p className="text-slate-800 text-xs font-semibold leading-relaxed mt-1">
+              {shareGrowthDetails}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

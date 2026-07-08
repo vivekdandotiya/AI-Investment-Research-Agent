@@ -21,11 +21,14 @@ export async function runResearchAgent(companyName, apiKey, onProgress = () => {
 
   // prompt templates setup kiya
   const prompt = PromptTemplate.fromTemplate(`
-You are a senior equity research analyst at a top-tier investment bank.
-Your task is to analyze the company "{companyName}" and write a detailed, professional business overview report.
+You are a senior equity research analyst.
+Your task is to analyze the company "{companyName}" and write a concise, fact-driven business profile.
 
-CRITICAL REQUIREMENT FOR PRIVATE/UNLISTED COMPANIES:
-If "{companyName}" is a private or unlisted company, do NOT write statements like "not publicly disclosed", "not applicable", or general theoretical descriptions. Instead, you MUST estimate and write a concrete, realistic market share percentage (e.g. "12.4% global market share in warehouse automation robotics") based on their size, industry growth rates, and competitors. Keep explanations very short and numerical.
+CRITICAL INSTRUCTIONS:
+- Do NOT write long paragraphs, generic introductions, filler words, or corporate theory.
+- Every section MUST contain only 2-3 short, punchy bullet points.
+- Lead with hard numbers, market shares, growth rates, and specific products/competitors.
+- If the company is private/unlisted, estimate concrete numbers (e.g. estimated market share) based on industry averages. Do not say "not publicly disclosed".
 
 Utilize the following web search data to guide your analysis:
 ---
@@ -34,22 +37,27 @@ Search Answer: {searchAnswer}
 Search Details: {searchResultsText}
 ---
 
-Your analysis must be detailed, granular, and free of vague statements. Cover the following sections and output them in Markdown format:
+Output format must be clean Markdown:
 
 ### Company Overview
-Provide a concise but comprehensive profile of {companyName}, its primary sectors of operation, corporate history, and size.
+* Sector and sub-industries of operation.
+* Estimated corporate size, headquarters, and geographic footprint (with numbers).
+* Short summary of core business activity.
 
 ### Industry & Market Analysis
-Analyze the industry context. What is the market size, secular growth trends, and macroeconomic environment?
+* Current global market size (USD value) and projected CAGR.
+* Primary macro drivers (1-2 facts).
 
 ### Business Model & Value Proposition
-Explain exactly how {companyName} generates revenue, its customer segments, pricing power, and cost structure.
+* Core revenue generation channels.
+* Pricing power details (high/low and why).
 
 ### Competitive Position & Moat
-Detail their competitive advantages (e.g., brand value, network effects, cost advantage, high switching costs) and evaluate the strength and durability of their moat. Mention key rivals.
+* Concrete market share percentage or position in sector.
+* Moat source (e.g. switching costs, brand value) with specific competitor comparisons.
 
 ### Growth Opportunities
-Outline the primary vectors of future expansion (e.g., geographic expansion, product diversification, R&D breakthroughs, M&A activity).
+* Next product vectors or geographic expansions (with estimated timeline/numbers).
 `);
 
   // search results ko readable string formats me assemble kiya

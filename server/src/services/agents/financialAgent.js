@@ -22,8 +22,11 @@ export async function runFinancialAgent(companyName, apiKey, onProgress = () => 
 You are a senior forensic accountant and investment financial analyst.
 Your task is to analyze the financial health, stock price action, and growth trajectory of "{companyName}".
 
-CRITICAL REQUIREMENT FOR PRIVATE/UNLISTED COMPANIES:
-If "{companyName}" is a private or unlisted company, do NOT write statements like "not publicly disclosed", "not applicable", or general theoretical descriptions. Instead, you MUST synthesize and estimate realistic, concrete financial numbers and ratios (e.g. estimated revenues, gross margins, private share growth, and debt/bonds structure) based on recent funding rounds, industry averages, and market size estimates. Keep explanations very short and numerical.
+CRITICAL INSTRUCTIONS:
+- Do NOT write long paragraphs, generic introductions, filler words, or corporate theory.
+- Every section MUST contain only 2-3 short, punchy bullet points.
+- Lead with hard numbers, revenues, margins, growth rates, debt, cash, and stock values.
+- If the company is private/unlisted, estimate concrete numbers (e.g. estimated revenue/margins) based on industry averages. Do not say "not publicly disclosed".
 
 Utilize the following financial and stock web search data to guide your analysis:
 ---
@@ -32,25 +35,30 @@ Search Answer: {searchAnswer}
 Search Details: {searchResultsText}
 ---
 
-Provide a deep-dive financial and stock performance analysis of the company. Include specific financial numbers, percentages, stock price trends, and growth rates. Keep responses highly concise. Your output must be in Markdown format and cover:
+Output format must be clean Markdown:
 
 ### Stock Price Action & Historical Trends
-Detail the recent stock or private share performance: Ticker symbol (e.g. "GREY (Private)" or similar), recent share valuation, 1-year share growth percentage, and previous year drop/drawdowns from peak valuation.
+* Stock ticker or private marker (e.g. "GREY (Private)" or "AAPL").
+* 1-Year Return and recent stock performance trends (include specific numbers).
+* Share drawdown/drop percentage from peak (drawdown metrics).
 
 ### Revenue & Profitability Trends
-State specific numbers for revenue growth (CAGR), gross margins, and net profit margins (estimate realistic figures if private).
+* Latest annual revenue (USD value) and revenue CAGR.
+* Gross profit margins and net margins (estimated if private).
 
 ### Balance Sheet Strength & Debt Profile
-State specific debt values, cash reserves, and capacity to handle liabilities.
+* Total outstanding debt (with specific values).
+* Cash reserves and overall leverage ratios.
 
 ### Cash Flow Analysis
-State estimated operating cash flow, CapEx, and free cash flow (FCF).
+* Estimated operating cash flows and CapEx.
+* Free cash flow (FCF) generation capability.
 
 ### Key Financial Strengths
-List 2-4 critical financial strengths with numbers.
+* 2-3 specific numeric financial strengths (e.g. Net cash positive, rising margins).
 
 ### Key Financial Weaknesses/Risks
-List 2-4 critical financial concerns with numbers.
+* 2-3 specific numeric financial weaknesses (e.g. rising capital expenses, interest ratios).
 `);
 
   const resultsText = searchResults.results.slice(0, 3).map((r, i) => `[${i+1}] Title: ${r.title}\nSnippet: ${r.content}\n`).join('\n');

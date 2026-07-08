@@ -22,6 +22,11 @@ export async function runRiskAgent(companyName, apiKey, onProgress = () => {}) {
 You are a senior risk officer and risk management consultant.
 Your task is to analyze the operational, industrial, and financial risk profiles for "{companyName}".
 
+CRITICAL INSTRUCTIONS:
+- Do NOT write long paragraphs, generic introductions, filler words, or corporate theory.
+- Every section MUST contain only 2-3 short, punchy bullet points.
+- Lead with hard numbers, concentration ratios, interest coverages, and specific competitor products/regulatory laws.
+
 Utilize the following risk-related web search data to guide your analysis:
 ---
 Search Query: {searchQuery}
@@ -29,19 +34,19 @@ Search Answer: {searchAnswer}
 Search Details: {searchResultsText}
 ---
 
-Draft a rigorous risk evaluation report. Output in Markdown format with the following sections:
+Output format must be clean Markdown:
 
 ### Business & Operational Risks
-Identify internal operational risks (e.g., key man risk, manufacturing disruptions, reliance on specific suppliers, technological disruption, cyber threats).
+* 2-3 specific operational vulnerabilities (e.g. supplier concentration, cyber threats, key man metrics).
 
 ### Industry & Regulatory Risks
-Detail external threats originating from industry shifts (e.g., changes in consumer preferences, technological cycles) and regulatory changes (e.g., antitrust investigations, environmental policies, tariff walls).
+* 2-3 industry headwinds (e.g. antitrust lawsuits, custom tariff impacts, carbon tax values).
 
 ### Competitive Threats
-Identify aggressive maneuvers from rivals, low barriers to entry, pricing wars, or disruptive products threatening {companyName}'s market share.
+* 2-3 aggressive moves by specific competitors (e.g. price drops, product feature launches).
 
 ### Financial Risks
-Discuss financial structure risks, cash burn rates, interest rate sensitivity, currency fluctuation exposures, and credit risks.
+* 2-3 balance sheet threats (e.g. high debt refinancing costs, cash burn rates, FX exposures).
 `);
 
   const resultsText = searchResults.results.slice(0, 3).map((r, i) => `[${i+1}] Title: ${r.title}\nSnippet: ${r.content}\n`).join('\n');

@@ -22,6 +22,11 @@ export async function runNewsAgent(companyName, apiKey, onProgress = () => {}) {
 You are a sentiment analyst and market intelligence researcher.
 Your task is to review recent news and assess market sentiment for "{companyName}".
 
+CRITICAL INSTRUCTIONS:
+- Do NOT write long paragraphs, generic introductions, filler words, or corporate theory.
+- Every section MUST contain only 2-3 short, punchy bullet points.
+- Lead with hard numbers, specific dates, target prices, partnership values, and names of sources.
+
 Utilize the following news search data:
 ---
 Search Query: {searchQuery}
@@ -29,19 +34,20 @@ Search Answer: {searchAnswer}
 Search Details: {searchResultsText}
 ---
 
-Write a comprehensive market sentiment report. Include actual recent headlines or events where possible. Output in Markdown format with the following sections:
+Output format must be clean Markdown:
 
 ### Recent News Highlights
-Summarize the most significant news stories or press releases from the last 3-6 months (e.g., product launches, executive changes, litigation, earnings beats/misses).
+* 2-3 key headlines or press releases from the last 3-6 months (with specific dates/details).
 
 ### Positive Sentiment Signals
-List 2-4 positive catalysts or signals (e.g., partnerships, upgrades, new market entry, robust sales figures).
+* 2-3 positive indicators (e.g. broker upgrades, target price increases, brand expansion with numbers).
 
 ### Negative Sentiment Signals
-List 2-4 negative concerns or signals (e.g., negative press, supply chain issues, regulatory scrutiny, public controversies).
+* 2-3 negative indicators (e.g. supply delays, litigation, negative catalysts with numbers).
 
 ### Overall Sentiment Rating
-State the overall sentiment clearly: **BULLISH**, **NEUTRAL**, or **BEARISH**. Follow up with a 2-3 sentence justification explaining the prevailing market consensus.
+* Rating: **BULLISH**, **NEUTRAL**, or **BEARISH**.
+* Rationale: 1-2 sentence numeric justification explaining the consensus.
 `);
 
   const resultsText = searchResults.results.slice(0, 3).map((r, i) => `[${i+1}] Title: ${r.title}\nSnippet: ${r.content}\n`).join('\n');

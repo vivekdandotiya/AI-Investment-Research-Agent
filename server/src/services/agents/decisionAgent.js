@@ -6,7 +6,7 @@ export async function runDecisionAgent({ companyName, researchReport, financialR
   // log update sent
   onProgress({ status: 'deciding', message: 'Decision Agent: CIO panel research reports evaluate karke final score calculate kar rha hai...' });
 
-  // gemini model initialize - JSON return mode config kiya isme
+  // Groq model initialize - JSON return mode config kiya isme
   const model = new ChatGroq({
     model: "llama-3.1-8b-instant",
     apiKey: apiKey,
@@ -127,7 +127,7 @@ Output MUST follow this JSON schema exactly:
     const jsonResult = JSON.parse(cleanContent);
     return jsonResult;
   } catch (error) {
-    console.error("Gemini response parse karne me fail ho gaya. Response content tha:", response.content);
-    throw new Error("Gemini response JSON standard format me nahi mila!");
+    console.error("LLM response parse karne me fail ho gaya. Response content tha:", response.content);
+    throw new Error("LLM response JSON standard format me nahi mila!");
   }
 }

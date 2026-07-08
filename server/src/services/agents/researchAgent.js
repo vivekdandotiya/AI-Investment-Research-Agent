@@ -12,7 +12,7 @@ export async function runResearchAgent(companyName, apiKey, onProgress = () => {
 
   onProgress({ status: 'researching', message: 'Research Agent: Mil gayi details! Ab business model aur structural data analyze kar rahe hain...' });
 
-  // gemini model initialize kiya
+  // Groq model initialize kiya
   const model = new ChatGroq({
     model: "llama-3.1-8b-instant",
     apiKey: apiKey,

@@ -24,6 +24,9 @@ export async function runResearchAgent(companyName, apiKey, onProgress = () => {
 You are a senior equity research analyst at a top-tier investment bank.
 Your task is to analyze the company "{companyName}" and write a detailed, professional business overview report.
 
+CRITICAL REQUIREMENT FOR PRIVATE/UNLISTED COMPANIES:
+If "{companyName}" is a private or unlisted company, do NOT write statements like "not publicly disclosed", "not applicable", or general theoretical descriptions. Instead, you MUST estimate and write a concrete, realistic market share percentage (e.g. "12.4% global market share in warehouse automation robotics") based on their size, industry growth rates, and competitors. Keep explanations very short and numerical.
+
 Utilize the following web search data to guide your analysis:
 ---
 Search Query: {searchQuery}

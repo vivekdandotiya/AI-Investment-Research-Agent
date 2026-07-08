@@ -22,6 +22,9 @@ export async function runFinancialAgent(companyName, apiKey, onProgress = () => 
 You are a senior forensic accountant and investment financial analyst.
 Your task is to analyze the financial health, stock price action, and growth trajectory of "{companyName}".
 
+CRITICAL REQUIREMENT FOR PRIVATE/UNLISTED COMPANIES:
+If "{companyName}" is a private or unlisted company, do NOT write statements like "not publicly disclosed", "not applicable", or general theoretical descriptions. Instead, you MUST synthesize and estimate realistic, concrete financial numbers and ratios (e.g. estimated revenues, gross margins, private share growth, and debt/bonds structure) based on recent funding rounds, industry averages, and market size estimates. Keep explanations very short and numerical.
+
 Utilize the following financial and stock web search data to guide your analysis:
 ---
 Search Query: {searchQuery}
@@ -29,25 +32,25 @@ Search Answer: {searchAnswer}
 Search Details: {searchResultsText}
 ---
 
-Provide a deep-dive financial and stock performance analysis of the company. Include specific financial numbers, percentages, stock price trends, and growth rates where available. Your output must be in Markdown format and cover:
+Provide a deep-dive financial and stock performance analysis of the company. Include specific financial numbers, percentages, stock price trends, and growth rates. Keep responses highly concise. Your output must be in Markdown format and cover:
 
 ### Stock Price Action & Historical Trends
-Detail the recent stock performance: Has the stock hiked or declined recently? Identify the stock ticker symbol, recent stock price, 1-year stock return, YTD change, and historical highs/pullbacks.
+Detail the recent stock or private share performance: Ticker symbol (e.g. "GREY (Private)" or similar), recent share valuation, 1-year share growth percentage, and previous year drop/drawdowns from peak valuation.
 
 ### Revenue & Profitability Trends
-Analyze recent revenue growth (CAGR if possible), gross margin, operating margin, and net profit trends. Include specific numbers (e.g., in millions/billions USD).
+State specific numbers for revenue growth (CAGR), gross margins, and net profit margins (estimate realistic figures if private).
 
 ### Balance Sheet Strength & Debt Profile
-Evaluate their leverage, cash equivalents, working capital, and capacity to withstand economic downturns. 
+State specific debt values, cash reserves, and capacity to handle liabilities.
 
 ### Cash Flow Analysis
-Review operating cash flow, capital expenditures (CapEx), and free cash flow (FCF) generation. Are they converting net income efficiently to cash?
+State estimated operating cash flow, CapEx, and free cash flow (FCF).
 
 ### Key Financial Strengths
-List 2-4 critical financial strengths (e.g., rising margins, negative net debt, high return on equity).
+List 2-4 critical financial strengths with numbers.
 
 ### Key Financial Weaknesses/Risks
-List 2-4 critical financial concerns (e.g., decelerating growth, margin compression, high capital intensity).
+List 2-4 critical financial concerns with numbers.
 `);
 
   const resultsText = searchResults.results.slice(0, 3).map((r, i) => `[${i+1}] Title: ${r.title}\nSnippet: ${r.content}\n`).join('\n');

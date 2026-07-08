@@ -18,51 +18,45 @@ export async function runDecisionAgent({ companyName, researchReport, financialR
 You are a Lead Portfolio Manager and Chief Investment Officer (CIO) at a premier investment firm.
 Your job is to read four detailed analysis reports about "{companyName}" and make a definitive investment decision: **INVEST** or **PASS**.
 
-Here are the reports compiled by your analyst agents:
+CRITICAL REQUIREMENT FOR BOTH LISTED AND UNLISTED COMPANIES:
+For all fields inside the required JSON response, you MUST output concrete, realistic numbers and numeric-led strings. Do NOT output placeholder text like "Not applicable", "Not publicly traded", "Not publicly disclosed", or general theoretical sentences. If the company is private/unlisted, you MUST synthesize and estimate realistic numbers (e.g. estimated revenues, gross margins, market shares, private share valuation hikes, and debt/bonds structure) based on the input reports. Keep explanations highly concise and numerical.
 
+Consolidate the inputs from the research, financial, news, and risk reports:
 ---
-### RESEARCH REPORT (Overview, Industry, Moat, Growth)
-{researchReport}
-
----
-### FINANCIAL REPORT (Trends, Profitability, Strengths/Weaknesses)
-{financialReport}
-
----
-### NEWS & SENTIMENT REPORT (Headlines, Sentiment, Signals)
-{newsReport}
-
----
-### RISK REPORT (Vulnerabilities, Threats, Weaknesses)
-{riskReport}
+Research Report: {researchReport}
+Financial Report: {financialReport}
+News Report: {newsReport}
+Risk Report: {riskReport}
 ---
 
-Based on these inputs, synthesize the analysis and write a final report in JSON format.
-You must assess:
-1. **recommendation**: Must be either "INVEST" or "PASS" (all caps). Choose "INVEST" only if the growth opportunities, moats, and financial strength outweigh the risks.
-2. **investmentScore**: Integer from 0 to 100, representing the overall quality of the investment (e.g. business moat, financials, industry tailwinds).
-3. **confidenceScore**: Integer from 0 to 100, representing your level of certainty in this decision (0-100).
-4. **riskScore**: Integer from 0 to 100, representing the threat level of the identified risks (higher score means higher risk/vulnerability).
-5. **explanation**: A detailed, 3-4 sentence justification of your decision, summarizing the core investment thesis.
-6. **strengths**: An array of 3-5 core strengths of the company.
-7. **concerns**: An array of 3-5 major concerns or threats.
+Your response MUST be ONLY a clean JSON block adhering to this format. Do not write any conversational text or explanation outside the JSON:
+1. **recommendation**: "INVEST" or "PASS" (Make a definitive decision).
+2. **investmentScore**: A rating from 0 to 100 representing overall investment quality.
+3. **confidenceScore**: A rating from 0 to 100 representing how confident you are in the data/analysis.
+4. **riskScore**: A rating from 0 to 100 representing the risk/volatility exposure.
+5. **explanation**: A concise 2-3 sentence overview justifying your decision.
+6. **strengths**: A list of 3 key investment strengths (include numbers where possible).
+7. **concerns**: A list of 3 key investment concerns/risks (include numbers where possible).
 8. **companyProfile**: An object with fields:
    - "sector": The primary sector/industry.
    - "businessModel": A brief 1-sentence summary of the business model.
    - "moat": A brief 1-sentence summary of the competitive moat.
+   - "marketShare": A concrete market share estimate (e.g. "12.4% global market share in warehouse automation robotics").
 9. **financialSummary**: An object with fields:
-   - "revenueGrowth": Summary of revenue trends.
-   - "profitability": Summary of profitability margins.
-   - "balanceSheet": Summary of financial stability.
+   - "revenueGrowth": Summary of revenue trends (include numbers).
+   - "profitability": Summary of profitability margins (include numbers).
+   - "balanceSheet": Summary of financial stability (include numbers).
+   - "bondsAndDebt": Summary of bonds and debt profile (e.g. "Bonds: $110M Private Debt. Yield: 8.5% interest").
 10. **sentimentSummary**: An object with fields:
     - "sentiment": "Bullish", "Neutral", or "Bearish".
     - "highlights": Summary of recent news.
 11. **stockPerformance**: An object detailing recent price movement:
-    - "ticker": Stock ticker symbol (e.g. "AAPL", "NVDA", "TSLA").
-    - "recentHikeOrDecline": A 1-2 sentence summary of recent stock hikes or declines, highlighting 1-year returns or YTD performance.
-    - "isHikedRecently": Boolean (true if stock price has hiked/gained overall over the past year, false if it has declined/stagnated).
-    - "oneYearReturn": Estimated or actual 1-year return percentage (e.g. "+42%", "-12%", "+120%").
-    - "previousYearDrop": A brief description of the previous year's drop/drawdown of shares from its peak (e.g. "-15.2% from peak", "47.88% drop", or "None (+120% gain)").
+    - "ticker": Stock ticker symbol or private marker (e.g. "GREY (Private)" or "AAPL").
+    - "recentHikeOrDecline": A 1-2 sentence summary of recent stock/share valuation hikes or declines (e.g. "Valuation hiked +47.3% to $1.4B in Series D round").
+    - "isHikedRecently": Boolean (true if price has hiked overall over the past year, false if it has declined/stagnated).
+    - "oneYearReturn": Estimated or actual 1-year return percentage (e.g. "+47.3%", "+31.8%").
+    - "previousYearDrop": A brief description of the previous year's drop/drawdown of shares from its peak (e.g. "-12.5% drawdown in private funding rounds" or "-9.5% from peak").
+    - "shareGrowthDetails": Concrete details of share price growth or private valuation hikes.
 
 Output MUST follow this JSON schema exactly:
 {{

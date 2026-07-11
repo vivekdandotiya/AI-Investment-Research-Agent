@@ -1,6 +1,6 @@
 # InvesTrack - AI Investment Research Assistant
 
-* **Vercel Live Demo**: [https://invest-three-omega.vercel.app](https://invest-three-omega.vercel.app)
+* **Vercel Live Demo**: [https://investment-eight-omega.vercel.app/](https://investment-eight-omega.vercel.app/)
 * **GitHub Repository**: [https://github.com/vivekdandotiya/AI-Investment-Research-Agent](https://github.com/vivekdandotiya/AI-Investment-Research-Agent)
 
 This is a multi-agent equity research assistant built for the InsideIIM x Altuni AI Labs take-home assignment. It takes a company name as input, runs web research, evaluates financial indicators, analyzes sentiment, maps risk profiles, and outputs a consensus recommendation (**INVEST** or **PASS**) with an explanation.

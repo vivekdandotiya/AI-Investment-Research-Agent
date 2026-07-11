@@ -1,5 +1,8 @@
 # InvesTrack - AI Investment Research Assistant
 
+* **Vercel Live Demo**: [https://invest-three-omega.vercel.app](https://invest-three-omega.vercel.app)
+* **GitHub Repository**: [https://github.com/vivekdandotiya/AI-Investment-Research-Agent](https://github.com/vivekdandotiya/AI-Investment-Research-Agent)
+
 This is a multi-agent equity research assistant built for the InsideIIM x Altuni AI Labs take-home assignment. It takes a company name as input, runs web research, evaluates financial indicators, analyzes sentiment, maps risk profiles, and outputs a consensus recommendation (**INVEST** or **PASS**) with an explanation.
 
 The application has a React frontend (Vite) and an Express backend, communicating via Server-Sent Events (SSE) to show the agent pipeline logs live.

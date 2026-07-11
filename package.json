@@ -10,7 +10,7 @@
     "dev:client": "npm run dev --prefix client",
     "start": "npm run start --prefix server",
     "export-logs": "node scripts/export-logs.js",
-    "zip": "powershell -Command \"Compress-Archive -Path client, server, scripts, transcripts, package.json, package-lock.json, README.md, .gitignore -DestinationPath InsideIIM_TakeHomeAssignment.zip -Force\""
+    "zip": "tar -acf InsideIIM_TakeHomeAssignment.zip --exclude=\"node_modules\" --exclude=\"dist\" --exclude=\".vercel\" --exclude=\".git\" client server scripts transcripts package.json package-lock.json README.md .gitignore"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

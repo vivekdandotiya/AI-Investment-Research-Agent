@@ -225,7 +225,7 @@ export default function App() {
             </div>
 
             <div className="text-[10px] text-slate-700 font-extrabold uppercase tracking-wider">
-              No API Keys? Simply activate **Sandbox Mode** to explore compiled profiles instantly.
+              Activate the **Live API** toggle to query real-time market data. Otherwise, run in **Sandbox Mode** to test instantly.
             </div>
           </div>
         )}
